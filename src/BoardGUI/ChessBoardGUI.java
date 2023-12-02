@@ -135,8 +135,10 @@ public class ChessBoardGUI extends JPanel {
                 if (selectedPiece != null) {
                     List<CoordinateEnum> temp = selectedPiece.getValidMoves();
                     g.setColor(Color.BLUE);
+//                    System.out.println(temp);
                     for(CoordinateEnum c : temp) {
-                        g.drawRect(c.getXCoordinate() * SQUARE_SIZE+5, (SIZE-1-c.getYCoordinate() )* SQUARE_SIZE+5, SQUARE_SIZE-10, SQUARE_SIZE-10);
+                        if(selectedPiece.isValidMove(c))
+                             g.drawRect(c.getXCoordinate() * SQUARE_SIZE+5, (SIZE-1-c.getYCoordinate() )* SQUARE_SIZE+5, SQUARE_SIZE-10, SQUARE_SIZE-10);
                     }
                 }
 
