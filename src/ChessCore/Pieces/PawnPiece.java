@@ -195,6 +195,9 @@ public class PawnPiece extends Piece {
             ChessBoard.addToOutputs(ENPASSANT);
 //            System.out.println(ENPASSANT);
             testIsEnPassantValid();
+            if(isInCheck(this.getCurrentCoordinate(), destinationCoordinate)) {
+                return false;
+            }
             return true;
         }
         if (dstPiece != null) {
@@ -209,7 +212,7 @@ public class PawnPiece extends Piece {
             if (dstPiece == null)
                 return this.getCurrentCoordinate().getXCoordinate() == destinationCoordinate.getXCoordinate();
 
-            return true;
+            return !isInCheck(this.getCurrentCoordinate(), destinationCoordinate);
         }
         if (!isPromoted()) {
             if (getValidMoves().contains(destinationCoordinate)) {
@@ -220,7 +223,7 @@ public class PawnPiece extends Piece {
                     }
                 }
                 testIsEnPassantValid();
-                return true;
+                return !isInCheck(this.getCurrentCoordinate(), destinationCoordinate);
             }
             return false;
         }

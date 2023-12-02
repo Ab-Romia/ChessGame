@@ -65,8 +65,9 @@ public class ChessBoardGUI extends JPanel {
                         try {
                             board.play(CoordinateEnum.getCoordinateEnum(selectedCol, SIZE - 1 - selectedRow), CoordinateEnum.getCoordinateEnum(col, SIZE - 1 - row), selectedPiece.getPieceColor());
                         } catch (Exception ex) {
-                            System.out.println("Invalid move");
+                            System.out.println(ex.getMessage());
                             inv = false;
+
                             JOptionPane.showMessageDialog(null, "Invalid move");
                         }
                         if (inv) {

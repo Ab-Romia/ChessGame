@@ -2,6 +2,7 @@
 package ChessCore;
 import ChessCore.Enum.CoordinateEnum;
 import ChessCore.Pieces.*;
+import Exceptions.*;
 
 
 import java.util.ArrayList;
@@ -145,6 +146,7 @@ public class ChessBoard {
         Piece destPiece = chessBoardInstance.getChessBoardPiece(destCoor);
         if (KingPiece.isKingAtRisk(currentTurnColor)) {
             outputs.add(currentTurnColor + ' ' + IN_CHECK);
+
             return true;
         }
         return false;
@@ -154,25 +156,25 @@ public class ChessBoard {
     public void play(CoordinateEnum srcCoor, CoordinateEnum destCoor, String name) throws Exception {
         Piece srcPiece = chessBoardInstance.getChessBoardPiece(srcCoor);
         Piece destPiece = chessBoardInstance.getChessBoardPiece(destCoor);
-        if (srcCoor == a4 && destCoor == a7){
+        if (srcCoor == e6 && destCoor == d7){
             System.out.println("");
         }
 
         if (gameEnded) {
 //            System.out.println(GAME_ALREADY_ENDED);
             outputs.add(GAME_ALREADY_ENDED);
-            throw new Exception(GAME_ALREADY_ENDED);
+            throw new GamedEnded();
         }
         if (srcPiece == null) {
             outputs.add(NO_PIECE_AT_THIS_POSITION); //check
-            throw new Exception(NO_PIECE_AT_THIS_POSITION);
+            throw new NullPiece();
         }
         if (currentTurnColor.equals(srcPiece.getPieceColor())) { // check right turn
 
             if (chessBoardInstance.isInsuffient()) {
                 outputs.add(INSUFFIENT_MATERIAL);
 //                System.out.println(INSUFFIENT_MATERIAL);
-                throw new Exception(INSUFFIENT_MATERIAL);
+                throw new Insufficient();
             }
             if (srcPiece instanceof PawnPiece) {
                 PawnPiece pawnPiece = (PawnPiece) srcPiece;
@@ -185,6 +187,7 @@ public class ChessBoard {
                 currentTurnColor = Objects.equals(currentTurnColor, WHITE) ? BLACK : WHITE;
                if (KingPiece.isKingAtRisk(currentTurnColor)) {
                    outputs.add(currentTurnColor + ' ' + IN_CHECK);
+//                   throw new InCheck(currentTurnColor);
 //                   System.out.println(currentTurnColor + ' ' + IN_CHECK);
                }
 //                if (KingPiece.isKingAtRisk(srcPiece.getPieceColor())) { // check
@@ -194,6 +197,7 @@ public class ChessBoard {
                if (KingPiece.didWin(currentTurnColor)) {
                    gameEnded = true;
                    outputs.set(outputs.size()-1, srcPiece.getPieceColor() + ' ' + WON);
+                   throw new Won(srcPiece.getPieceColor());
 //                   System.out.println(srcPiece.getPieceColor() + ' ' + WON);
                }
                // string color opposite color of srcPiece//
@@ -203,23 +207,26 @@ public class ChessBoard {
 //                    System.out.println();
                    outputs.add(STALEMATE);
                    gameEnded = true;
+                   throw new Stalemate();
                }
 
 
             } else {
 //                System.out.println(IN_VALID_MOVE);
                 outputs.add(IN_VALID_MOVE);
-                throw new Exception(IN_VALID_MOVE);
+                throw new InvalidMove();
             }
             if (chessBoardInstance.isInsuffient()) {
                 outputs.add(INSUFFIENT_MATERIAL);
+
 //                System.out.println(INSUFFIENT_MATERIAL);
                 gameEnded= true;
+                throw new Insufficient();
             }
         } else {
 //            System.out.println(IN_VALID_MOVE);
             outputs.add(IN_VALID_MOVE);
-            throw new Exception(IN_VALID_MOVE);
+            throw new InvalidMove();
         }
 
     }
