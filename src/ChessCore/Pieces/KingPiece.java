@@ -69,83 +69,7 @@ public class KingPiece extends Piece {
         return true;
     }
 
-    private boolean isRightCastling(CoordinateEnum destCoor) {
-        int xCoor = this.getCurrentCoordinate().getXCoordinate();
-        int yCoor = this.getCurrentCoordinate().getYCoordinate();
-        CoordinateEnum mustDestCoor = CoordinateEnum.getCoordinateEnum(xCoor+2, yCoor);
-
-        return (yCoor == 0 || yCoor == 7) && (mustDestCoor == destCoor);
-    }
-
-    private boolean isLeftCastling(CoordinateEnum destCoor) {
-        int xCoor = this.getCurrentCoordinate().getXCoordinate();
-        int yCoor = this.getCurrentCoordinate().getYCoordinate();
-        CoordinateEnum mustDestCoor = CoordinateEnum.getCoordinateEnum(xCoor-2, yCoor);
-        return (yCoor == 0 || yCoor == 7) && (mustDestCoor == destCoor);
-    }
-
-    public Boolean doLeftCastle(CoordinateEnum destCoor) {
-        // mesh mthdeden
-        // mesh mt7rkeen
-        ChessBoard chessBoard = ChessBoard.getInstance();
-        int kingXCoor = this.getCurrentCoordinate().getXCoordinate();
-        int kingYCoor = this.getCurrentCoordinate().getYCoordinate();
-        CoordinateEnum kingCoor, rookCoor;
-        if (this.getPieceColor().equals(WHITE)) {
-            kingCoor = e1;
-            rookCoor = a1;
-            if (destCoor != c1)
-                return false;
-        } else {
-            kingCoor = e8;
-            rookCoor = a8;
-            if (destCoor != c8)
-                return false;
-        }
-        boolean isKingPiece = chessBoard.getChessBoardPiece(kingCoor).getPieceName().equals(KING_PIECE_NAME);
-        boolean isRookPiece = chessBoard.getChessBoardPiece(rookCoor).getPieceName().equals(ROOK_PIECE_NAME);
-
-        if (!isKingPiece || !isRookPiece) {
-            return false;
-        }
-
-        CoordinateEnum bishopCoor = CoordinateEnum.getCoordinateEnum(kingXCoor - 1, kingYCoor);
-        CoordinateEnum horseCoor = CoordinateEnum.getCoordinateEnum(kingXCoor - 2, kingYCoor);
-        Piece bishoopPiece = chessBoard.getChessBoardPiece(bishopCoor);
-        Piece horsePiece = chessBoard.getChessBoardPiece(horseCoor);
-
-        if (bishoopPiece != null || horsePiece != null) {
-            return false;
-        }
-        chessBoard.setChessBoardPiece(rookCoor, bishopCoor);
-        ChessBoard.addToOutputs(CASTLE);
-        return true;
-    }
-
-    public Boolean isValidMove(CoordinateEnum destCoor) {
-        ChessBoard chessBoardInstance = ChessBoard.getInstance();
-        List<CoordinateEnum> possibleMoves = this.getPossibleMoves();
-        if (isRightCastling(destCoor)) {
-//            System.out.println(CASTLE);
-            return doRightCastle(destCoor);
-        } else if (isLeftCastling(destCoor)) {
-//            System.out.println(CASTLE);
-            return doLeftCastle(destCoor);
-        } else {
-            if (possibleMoves.contains(destCoor)) {
-                Piece piece = chessBoardInstance.getChessBoardPiece(destCoor);
-                if (piece != null) {
-                    return !Objects.equals(piece.getPieceColor(), this.getPieceColor());
-                }
-                return isKingSafe(destCoor.getXCoordinate(), destCoor.getYCoordinate());
-            }
-            return false;
-        }
-    }
-
-    public Boolean doRightCastle(CoordinateEnum destCoor) {
-        // mesh mthdeden
-        // mesh mt7rkeen
+    public boolean isRightCastling(CoordinateEnum destCoor) {
         ChessBoard chessBoard = ChessBoard.getInstance();
         int kingXCoor = this.getCurrentCoordinate().getXCoordinate();
         int kingYCoor = this.getCurrentCoordinate().getYCoordinate();
@@ -176,9 +100,111 @@ public class KingPiece extends Piece {
         if (bishoopPiece != null || horsePiece != null) {
             return false;
         }
+
+        return true;
+    }
+
+    public boolean isLeftCastling(CoordinateEnum destCoor) {
+        ChessBoard chessBoard = ChessBoard.getInstance();
+        int kingXCoor = this.getCurrentCoordinate().getXCoordinate();
+        int kingYCoor = this.getCurrentCoordinate().getYCoordinate();
+        CoordinateEnum kingCoor, rookCoor;
+        if (this.getPieceColor().equals(WHITE)) {
+            kingCoor = e1;
+            rookCoor = a1;
+            if (destCoor != c1)
+                return false;
+        } else {
+            kingCoor = e8;
+            rookCoor = a8;
+            if (destCoor != c8)
+                return false;
+        }
+        boolean isKingPiece = chessBoard.getChessBoardPiece(kingCoor).getPieceName().equals(KING_PIECE_NAME);
+        boolean isRookPiece = chessBoard.getChessBoardPiece(rookCoor).getPieceName().equals(ROOK_PIECE_NAME);
+
+        if (!isKingPiece || !isRookPiece) {
+            return false;
+        }
+
+        CoordinateEnum bishopCoor = CoordinateEnum.getCoordinateEnum(kingXCoor - 1, kingYCoor);
+        CoordinateEnum horseCoor = CoordinateEnum.getCoordinateEnum(kingXCoor - 2, kingYCoor);
+        Piece bishoopPiece = chessBoard.getChessBoardPiece(bishopCoor);
+        Piece horsePiece = chessBoard.getChessBoardPiece(horseCoor);
+
+        if (bishoopPiece != null || horsePiece != null) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public void doLeftCastle(CoordinateEnum destCoor) {
+        // mesh mthdeden
+        // mesh mt7rkeen
+        ChessBoard chessBoard = ChessBoard.getInstance();
+        int kingXCoor = this.getCurrentCoordinate().getXCoordinate();
+        int kingYCoor = this.getCurrentCoordinate().getYCoordinate();
+        CoordinateEnum kingCoor, rookCoor;
+        if (this.getPieceColor().equals(WHITE)) {
+            kingCoor = e1;
+            rookCoor = a1;
+
+        } else {
+            kingCoor = e8;
+            rookCoor = a8;
+
+        }
+
+        CoordinateEnum bishopCoor = CoordinateEnum.getCoordinateEnum(kingXCoor - 1, kingYCoor);
+        CoordinateEnum horseCoor = CoordinateEnum.getCoordinateEnum(kingXCoor - 2, kingYCoor);
         chessBoard.setChessBoardPiece(rookCoor, bishopCoor);
         ChessBoard.addToOutputs(CASTLE);
-        return true;
+
+    }
+
+    public Boolean isValidMove(CoordinateEnum destCoor) {
+        ChessBoard chessBoardInstance = ChessBoard.getInstance();
+        List<CoordinateEnum> possibleMoves = this.getPossibleMoves();
+        if (isRightCastling(destCoor)) {
+//            System.out.println(CASTLE);
+            return isRightCastling(destCoor);
+        } else if (isLeftCastling(destCoor)) {
+//            System.out.println(CASTLE);
+            return isLeftCastling(destCoor);
+        } else {
+            if (possibleMoves.contains(destCoor)) {
+                Piece piece = chessBoardInstance.getChessBoardPiece(destCoor);
+                if (piece != null) {
+                    return !Objects.equals(piece.getPieceColor(), this.getPieceColor());
+                }
+                return isKingSafe(destCoor.getXCoordinate(), destCoor.getYCoordinate());
+            }
+            return false;
+        }
+    }
+
+    public void doRightCastle(CoordinateEnum destCoor) {
+        // mesh mthdeden
+        // mesh mt7rkeen
+        ChessBoard chessBoard = ChessBoard.getInstance();
+        int kingXCoor = this.getCurrentCoordinate().getXCoordinate();
+        int kingYCoor = this.getCurrentCoordinate().getYCoordinate();
+        CoordinateEnum kingCoor, rookCoor;
+        if (this.getPieceColor().equals(WHITE)) {
+            kingCoor = e1;
+            rookCoor = h1;
+
+        } else {
+            kingCoor = e8;
+            rookCoor = h8;
+
+        }
+        CoordinateEnum bishopCoor = CoordinateEnum.getCoordinateEnum(kingXCoor + 1, kingYCoor);
+        CoordinateEnum horseCoor = CoordinateEnum.getCoordinateEnum(kingXCoor + 2, kingYCoor);
+        chessBoard.setChessBoardPiece(rookCoor, bishopCoor);
+        ChessBoard.addToOutputs(CASTLE);
+
     }
 
     private static KingPiece getKingPieceByColor(String color) {

@@ -72,6 +72,7 @@ public class ChessGame {
             }
             try {
                 chessBoardInstance.play(srcCoor, dstCoor, name);
+
             } catch (Exception e) {
                 break;
             }

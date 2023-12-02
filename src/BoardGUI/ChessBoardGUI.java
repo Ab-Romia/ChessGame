@@ -136,10 +136,9 @@ public class ChessBoardGUI extends JPanel {
                     List<CoordinateEnum> temp = selectedPiece.getValidMoves();
                     g.setColor(Color.BLUE);
 //                    System.out.println(temp);
-                    for(CoordinateEnum c : temp) {
-                        if(selectedPiece.isValidMove(c))
-                             g.drawRect(c.getXCoordinate() * SQUARE_SIZE+5, (SIZE-1-c.getYCoordinate() )* SQUARE_SIZE+5, SQUARE_SIZE-10, SQUARE_SIZE-10);
-                    }
+                        if(selectedPiece.isValidMove(CoordinateEnum.getCoordinateEnum(col,SIZE-1-row)))
+                             g.drawRect(col * SQUARE_SIZE+5, row * SQUARE_SIZE+5, SQUARE_SIZE-10, SQUARE_SIZE-10);
+
                 }
 
                 // Add text to the square

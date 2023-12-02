@@ -183,7 +183,37 @@ public class ChessBoard {
            if (getChessBoardPiece(srcCoor).isValidMove(destCoor)) {
                 srcPiece = this.getChessBoardPiece(srcPiece.getCurrentCoordinate());
                 doCaptured(destCoor, srcPiece);
-                setChessBoardPiece(srcPiece.getCurrentCoordinate(), destCoor);
+                if (srcPiece instanceof KingPiece) {
+                    KingPiece kp = (KingPiece) srcPiece;
+                    if (kp.isRightCastling(destCoor)) {
+                        if (kp.getPieceColor().equals(WHITE)) {
+
+                            setChessBoardPiece(h1, f1);
+                            setChessBoardPiece(e1, g1);
+
+                        } else {
+
+                            setChessBoardPiece(h8, f8);
+                            setChessBoardPiece(e8, g8);
+
+                        }
+                    } else if (kp.isLeftCastling(destCoor)) {
+                        if (kp.getPieceColor().equals(WHITE)) {
+
+                            setChessBoardPiece(a1, d1);
+                            setChessBoardPiece(e1, c1);
+                        } else {
+
+                            setChessBoardPiece(a8, d8);
+                            setChessBoardPiece(e8, c8);
+                        }
+                    } else {
+                        setChessBoardPiece(srcPiece.getCurrentCoordinate(), destCoor);
+
+                    }
+                }
+                    else
+                         setChessBoardPiece(srcPiece.getCurrentCoordinate(), destCoor);
                 currentTurnColor = Objects.equals(currentTurnColor, WHITE) ? BLACK : WHITE;
                if (KingPiece.isKingAtRisk(currentTurnColor)) {
                    outputs.add(currentTurnColor + ' ' + IN_CHECK);
@@ -209,7 +239,7 @@ public class ChessBoard {
                    gameEnded = true;
                    throw new Stalemate();
                }
-
+               printChessBoard();
 
             } else {
 //                System.out.println(IN_VALID_MOVE);
