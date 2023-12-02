@@ -2,6 +2,7 @@
 package ChessCore.Pieces;
 import ChessCore.ChessBoard;
 import ChessCore.Enum.CoordinateEnum;
+import Exceptions.InvalidMove;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,12 +121,9 @@ public class KingPiece extends Piece {
             if (destCoor != c8)
                 return false;
         }
-        boolean isKingPiece = chessBoard.getChessBoardPiece(kingCoor).getPieceName().equals(KING_PIECE_NAME);
-        boolean isRookPiece = chessBoard.getChessBoardPiece(rookCoor).getPieceName().equals(ROOK_PIECE_NAME);
-
-        if (!isKingPiece || !isRookPiece) {
+        if(chessBoard.getChessBoardPiece(kingCoor)==null||chessBoard.getChessBoardPiece(rookCoor)==null)
             return false;
-        }
+
 
         CoordinateEnum bishopCoor = CoordinateEnum.getCoordinateEnum(kingXCoor - 1, kingYCoor);
         CoordinateEnum horseCoor = CoordinateEnum.getCoordinateEnum(kingXCoor - 2, kingYCoor);
@@ -279,9 +277,20 @@ public class KingPiece extends Piece {
         for (int i = 0 ; i < 8 ; i++) {
             for (int j = 0; j < 8; j++) {
                 Piece piece = chessBoardInstance.getChessBoardPiece(i, j);
+                if(piece!=null&& Objects.equals(piece.getPieceName(), KING_PIECE_NAME))
+                    continue;
                 if (piece != null && !piece.getPieceColor().equals(color)) {
-                    if (piece.isValidMove(kingPiece.getCurrentCoordinate())) {
-                        flag = true;
+                    assert kingPiece != null;
+                    try {
+                        if (piece.isValidMove(kingPiece.getCurrentCoordinate())) {
+
+                            flag = true;
+                        }
+                    }catch(NullPointerException e)
+                    {
+                        System.out.println(e.getMessage());
+                        flag = false;
+
                     }
                 }
             }

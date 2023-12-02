@@ -43,12 +43,16 @@ public class ChessBoardGUI extends JPanel {
                         selectedCol = -1;
 
                     }
-                    if(!Objects.equals(board.getCurrentTurnColor(), selectedPiece.getPieceColor()))
+                    try {
+                        if (!Objects.equals(board.getCurrentTurnColor(), selectedPiece.getPieceColor())) {
+                            JOptionPane.showMessageDialog(null, board.getCurrentTurnColor() + "'s turn");
+                            selectedPiece = null;
+                            selectedRow = -1;
+                            selectedCol = -1;
+                        }
+                    }catch(NullPointerException ex)
                     {
-                        JOptionPane.showMessageDialog(null, board.getCurrentTurnColor()+"'s turn");
-                        selectedPiece = null;
-                        selectedRow = -1;
-                        selectedCol = -1;
+                        System.out.println(ex.getMessage());
                     }
 
                     repaint();
@@ -65,7 +69,7 @@ public class ChessBoardGUI extends JPanel {
                         JOptionPane.showMessageDialog(null, "Invalid Move");
                     } else {
                         try {
-                            if(Objects.equals(selectedPiece.getPieceName(), "Pawn")&&(Objects.equals(selectedPiece.getPieceColor(), "White") &&row==0|| Objects.equals(selectedPiece.getPieceColor(), "Black") &&row==7))
+                            if(Objects.equals(selectedPiece.getPieceName(), "Pawn")&&(Objects.equals(selectedPiece.getPieceColor(), "White") &&row==0&&selectedCol==1|| Objects.equals(selectedPiece.getPieceColor(), "Black") &&row==7&&selectedCol==6))
                             {
                                 String[] options = {"Queen", "Rook", "Bishop", "Knight"};
                                 String temp;
@@ -133,9 +137,10 @@ public class ChessBoardGUI extends JPanel {
                 // If this square is the selected square, draw a border around it
                 // If this square is the selected square, draw a border around it
                 if (selectedPiece != null) {
-                    List<CoordinateEnum> temp = selectedPiece.getValidMoves();
+
                     g.setColor(Color.BLUE);
 //                    System.out.println(temp);
+
                         if(selectedPiece.isValidMove(CoordinateEnum.getCoordinateEnum(col,SIZE-1-row)))
                              g.drawRect(col * SQUARE_SIZE+5, row * SQUARE_SIZE+5, SQUARE_SIZE-10, SQUARE_SIZE-10);
 

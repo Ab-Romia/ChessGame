@@ -192,7 +192,7 @@ public class PawnPiece extends Piece {
             }
         }
         if (isEnPessant(destinationCoordinate)) {
-            ChessBoard.addToOutputs(ENPASSANT);
+//            ChessBoard.addToOutputs(ENPASSANT);
 //            System.out.println(ENPASSANT);
             testIsEnPassantValid();
             if(isInCheck(this.getCurrentCoordinate(), destinationCoordinate)) {
@@ -236,7 +236,23 @@ public class PawnPiece extends Piece {
         }
     }
 
-    private Boolean isEnPessant(CoordinateEnum destCoor) {
+    public void doEnpassant(CoordinateEnum destCoor)
+    {
+        ChessBoard chessBoard = ChessBoard.getInstance();
+        int xCoor = this.getCurrentCoordinate().getXCoordinate();
+        int yCoor = this.getCurrentCoordinate().getYCoordinate();
+        int destCoorX = destCoor.getXCoordinate();
+        int destCoorY = destCoor.getYCoordinate();
+        int pieceColorSign = this.getPieceColor().equals(WHITE) ? 1 : -1;
+        int sign = destCoorX - xCoor; // left or right
+        CoordinateEnum coordinateEnum = CoordinateEnum.getCoordinateEnum(xCoor + sign, yCoor);
+        if(isEnPessant(destCoor)) {
+            chessBoard.setPieceInCoordinate(coordinateEnum, null);
+
+        }
+
+    }
+    public Boolean isEnPessant(CoordinateEnum destCoor) {
         if (destCoor == d6){
 //            System.out.println("");
         }
@@ -264,13 +280,9 @@ public class PawnPiece extends Piece {
             }
             if ((yCoor == 3 || yCoor == 4) && (destCoorX == xCoor + sign && destCoorY == (yCoor + pieceColorSign))) {
                 Piece piece = chessBoard.getChessBoardPiece(xCoor + sign, yCoor);
-                if ((piece != null)
+                return (piece != null)
                         && (!piece.getPieceColor().equals(this.getPieceColor()))
-                        && (CoordinateEnum.getCoordinateEnum(piece.getCurrentCoordinate()) != null)) {
-
-                    chessBoard.setPieceInCoordinate(coordinateEnum, null);
-                    return true;
-                }
+                        && (CoordinateEnum.getCoordinateEnum(piece.getCurrentCoordinate()) != null);
             }
         }
         return false;

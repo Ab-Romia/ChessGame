@@ -183,7 +183,16 @@ public class ChessBoard {
            if (getChessBoardPiece(srcCoor).isValidMove(destCoor)) {
                 srcPiece = this.getChessBoardPiece(srcPiece.getCurrentCoordinate());
                 doCaptured(destCoor, srcPiece);
-                if (srcPiece instanceof KingPiece) {
+                if (srcPiece instanceof PawnPiece)
+                {
+                    PawnPiece pp = (PawnPiece) srcPiece;
+                    if(pp.isEnPessant(destCoor))
+                        pp.doEnpassant(destCoor);
+
+                    setChessBoardPiece(srcPiece.getCurrentCoordinate(), destCoor);
+
+                }
+                else if (srcPiece instanceof KingPiece) {
                     KingPiece kp = (KingPiece) srcPiece;
                     if (kp.isRightCastling(destCoor)) {
                         if (kp.getPieceColor().equals(WHITE)) {

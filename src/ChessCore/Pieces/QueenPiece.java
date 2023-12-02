@@ -58,12 +58,13 @@ public class QueenPiece extends Piece {
                 if(isThereObstacle(destinationCoordinate)) {
                     return false;
                 }
-                return !Objects.equals(piece.getPieceColor(), this.getPieceColor());
+
+                if(Objects.equals(piece.getPieceColor(), this.getPieceColor()))
+                    return false;
             }
-            if (isInCheck(this.getCurrentCoordinate(), destinationCoordinate)) {
-                return false;
-            }
-            return true;
+
+            if(!isInCheck(this.getCurrentCoordinate(),destinationCoordinate))
+                return true;
         }
         return false;
     }
@@ -75,6 +76,8 @@ public class QueenPiece extends Piece {
         possibleMoves.removeIf(Objects::isNull);
         for (int i = 0 ; i < possibleMoves.size() ; i++) {
             Piece piece = chessBoardInstance.getChessBoardPiece(possibleMoves.get(i));
+            if(!isValidMove(possibleMoves.get(i)))
+                possibleMoves.set(i,null);
             if ( ( piece!= null && piece.getPieceColor().equals(this.getPieceColor()) )
                     || this.isThereObstacle(possibleMoves.get(i))) {
                 possibleMoves.set(i, null);

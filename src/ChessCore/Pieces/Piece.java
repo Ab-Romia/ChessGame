@@ -120,6 +120,7 @@ public abstract class Piece {
             validPieceColor = destPiece.getPieceColor();
             validPieceName = destPiece.getPieceName();
         }
+
         chessBoardInstance.setChessBoardPiece(srcCoor, destCoor);
         if (KingPiece.isKingAtRisk(this.getPieceColor())) {
             undoMove(validPieceColor, validPieceName, srcCoor, destCoor);
