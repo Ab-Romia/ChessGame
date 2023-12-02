@@ -9,11 +9,8 @@ import java.util.Objects;
 
 import static ChessCore.Enum.CoordinateEnum.*;
 
-import static ChessCore.Utils.Constants.CASTLE;
-import static ChessCore.Utils.Constants.KING_PIECE_NAME;
-import static ChessCore.Utils.Constants.ROOK_PIECE_NAME;
-import static ChessCore.Utils.Constants.WHITE;
 
+import static ChessCore.Utils.Constants.*;
 public class KingPiece extends Piece {
 
     private final String pieceName = KING_PIECE_NAME;
@@ -60,7 +57,7 @@ public class KingPiece extends Piece {
                         && !Objects.equals(piece.getPieceColor(), this.getPieceColor())
                         && piece.isValidMove(CoordinateEnum.getCoordinateEnum(xCoor, yCoor))) {
 //                    System.out.println("King is not safe");
-                    return false;
+                       return Objects.equals(piece.getPieceName(), PAWN_PIECE_NAME) && i == xCoor;
                 }
             }
         }

@@ -12,7 +12,7 @@ import ChessCore.Pieces.*;
 
 public class ChessBoardGUI extends JPanel {
     private static final int SIZE = 8;
-    private static final int SQUARE_SIZE = 120;
+    private static final int SQUARE_SIZE = 50;
     private static final Color LIGHT_BROWN = new Color(160, 70, 45);
     private static final Color YELLOW_WHITE = new Color(255, 255, 200);
     private char[] letters = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
@@ -30,7 +30,7 @@ public class ChessBoardGUI extends JPanel {
                 if (selectedPiece == null) {
 
                     System.out.println("Selected: " + CoordinateEnum.getCoordinateEnum(col, SIZE-row-1));
-                    selectedPiece = board.getChessBoardPiece(CoordinateEnum.getCoordinateEnum(col, SIZE-1-row));
+                    selectedPiece = board.getChessBoardPiece(CoordinateEnum.getCoordinateEnum(col, SIZE-row-1));
                     selectedRow = row;
                     selectedCol = col;
                     if(selectedPiece!=null&&board.srcInv(selectedPiece.getCurrentCoordinate()))
@@ -65,9 +65,7 @@ public class ChessBoardGUI extends JPanel {
                         try {
                             board.play(CoordinateEnum.getCoordinateEnum(selectedCol, SIZE - 1 - selectedRow), CoordinateEnum.getCoordinateEnum(col, SIZE - 1 - row), selectedPiece.getPieceColor());
                         } catch (Exception ex) {
-                            System.out.println("Invalid move");
-                            inv = false;
-                            JOptionPane.showMessageDialog(null, "Invalid move");
+                            System.out.println(ex.getMessage());
                         }
                         if (inv) {
                             selectedPiece = null;

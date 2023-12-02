@@ -172,7 +172,7 @@ public class PawnPiece extends Piece {
             Piece possibleMove = chessBoardInstance.getChessBoardPiece(possibleMoves.get(i));
             if (possibleMove != null && (possibleMoves.get(i).getXCoordinate() == this.getCurrentCoordinate().getXCoordinate())
                     || (possibleMove != null && possibleMove.getPieceColor().equals(this.getPieceColor()))
-            || (possibleMove == null && possibleMoves.get(i).getXCoordinate() != this.getCurrentCoordinate().getXCoordinate())) {
+                    || (possibleMove == null && possibleMoves.get(i).getXCoordinate() != this.getCurrentCoordinate().getXCoordinate())) {
                 possibleMoves.set(i, null);
             }
         }
@@ -195,6 +195,9 @@ public class PawnPiece extends Piece {
             ChessBoard.addToOutputs(ENPASSANT);
 //            System.out.println(ENPASSANT);
             testIsEnPassantValid();
+            if(isInCheck(this.getCurrentCoordinate(), destinationCoordinate)) {
+                return false;
+            }
             return true;
         }
         if (dstPiece != null) {
@@ -204,12 +207,14 @@ public class PawnPiece extends Piece {
         }
         if (getValidMoves().contains(destinationCoordinate)) {
             if (dstPiece != null&&Objects.equals(dstPiece.getPieceColor(), this.getPieceColor()))
-                    return false;
+                return false;
 
             if (dstPiece == null)
                 return this.getCurrentCoordinate().getXCoordinate() == destinationCoordinate.getXCoordinate();
 
-            return true;
+            if(isInCheck(this.getCurrentCoordinate(), destinationCoordinate)) {
+                return false;
+            }
         }
         if (!isPromoted()) {
             if (getValidMoves().contains(destinationCoordinate)) {
@@ -220,7 +225,9 @@ public class PawnPiece extends Piece {
                     }
                 }
                 testIsEnPassantValid();
-                return true;
+                if(isInCheck(this.getCurrentCoordinate(), destinationCoordinate)) {
+                    return false;
+                }
             }
             return false;
         }
