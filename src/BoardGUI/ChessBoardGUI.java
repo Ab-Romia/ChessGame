@@ -10,9 +10,12 @@ import ChessCore.ChessBoard;
 import ChessCore.Enum.*;
 import ChessCore.Pieces.*;
 
+import static ChessCore.Utils.Constants.BLACK;
+import static ChessCore.Utils.Constants.WHITE;
+
 public class ChessBoardGUI extends JPanel {
     private static final int SIZE = 8;
-    private static final int SQUARE_SIZE = 50;
+    private static final int SQUARE_SIZE = 70;
     private static final Color LIGHT_BROWN = new Color(160, 70, 45);
     private static final Color YELLOW_WHITE = new Color(255, 255, 200);
     private char[] letters = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
@@ -93,7 +96,11 @@ public class ChessBoardGUI extends JPanel {
                 g.fillRect(col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
 
                 // Draw the piece if there is one at this position
-                Piece p = board.getChessBoardPiece(CoordinateEnum.getCoordinateEnum(col, SIZE - row - 1));
+
+                    Piece p = board.getChessBoardPiece(CoordinateEnum.getCoordinateEnum(col, SIZE - row - 1));
+                if(ChessBoard.getCurrentTurnColor()==BLACK) {
+                     p = board.getChessBoardPiece(CoordinateEnum.getCoordinateEnum(col, 7-(SIZE - row - 1)));
+                }
                 if (p != null) {
                     // Load the image for this piece
                     ImageIcon imageIcon = new ImageIcon("PiecesPNG/" + p.getPC() + ".png");

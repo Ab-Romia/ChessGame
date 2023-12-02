@@ -29,14 +29,14 @@ public class ChessBoard {
         getOutputs().add(output);
     }
 
-    private String currentTurnColor = WHITE;
+    private static String currentTurnColor = WHITE;
 
     private static ChessBoard chessBoardInstance;
 
     private ChessBoard() {
         initializeGame();
     }
-    public String getCurrentTurnColor() {
+    public static String getCurrentTurnColor() {
         return currentTurnColor;
     }
 
@@ -215,7 +215,7 @@ public class ChessBoard {
             }
         } else {
             outputs.add(IN_VALID_MOVE);
-            throw new InvalidMove("Not your turn");
+            throw new InvalidMove("Not your turn!");
         }
 
     }
