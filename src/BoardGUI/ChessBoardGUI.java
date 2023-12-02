@@ -79,7 +79,7 @@ public class ChessBoardGUI extends JPanel {
                                 else if(x==2)
                                     temp = "B";
                                 else if(x==3)
-                                    temp = "N";
+                                    temp = "K";
                                 else
                                     temp = "Q";
                                 board.play(CoordinateEnum.getCoordinateEnum(selectedCol, SIZE - 1 - selectedRow), CoordinateEnum.getCoordinateEnum(col, SIZE - 1 - row), temp);
