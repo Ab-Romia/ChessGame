@@ -6,6 +6,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Objects;
+
 import ChessCore.ChessBoard;
 import ChessCore.Enum.*;
 import ChessCore.Pieces.*;
@@ -15,10 +17,10 @@ public class ChessBoardGUI extends JPanel {
     private static final int SQUARE_SIZE = 120;
     private static final Color LIGHT_BROWN = new Color(160, 70, 45);
     private static final Color YELLOW_WHITE = new Color(255, 255, 200);
-    private char[] letters = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
-    private ChessBoard board = ChessBoard.getInstance();
+    private final char[] letters = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
+    private final ChessBoard board = ChessBoard.getInstance();
     private Piece selectedPiece = null;
-    private boolean turn = true;
+//    private boolean turn = true;
     private int selectedRow = -1;
     private int selectedCol = -1;
     public ChessBoardGUI() {
@@ -30,7 +32,7 @@ public class ChessBoardGUI extends JPanel {
                 if (selectedPiece == null) {
 
                     System.out.println("Selected: " + CoordinateEnum.getCoordinateEnum(col, SIZE-row-1));
-                    selectedPiece = board.getChessBoardPiece(CoordinateEnum.getCoordinateEnum(col, SIZE-1-row));
+                    selectedPiece = board.getChessBoardPiece(CoordinateEnum.getCoordinateEnum(col, SIZE-row-1));
                     selectedRow = row;
                     selectedCol = col;
                     if(selectedPiece!=null&&board.srcInv(selectedPiece.getCurrentCoordinate()))
@@ -41,7 +43,7 @@ public class ChessBoardGUI extends JPanel {
                         selectedCol = -1;
 
                     }
-                    if(board.getCurrentTurnColor()!=selectedPiece.getPieceColor())
+                    if(!Objects.equals(board.getCurrentTurnColor(), selectedPiece.getPieceColor()))
                     {
                         JOptionPane.showMessageDialog(null, board.getCurrentTurnColor()+"'s turn");
                         selectedPiece = null;
@@ -54,7 +56,7 @@ public class ChessBoardGUI extends JPanel {
                     // Move the selected piece
                     CoordinateEnum src = CoordinateEnum.getCoordinateEnum(selectedCol, SIZE - 1 - selectedRow);
                     CoordinateEnum dest = CoordinateEnum.getCoordinateEnum(col, SIZE - 1 - row);
-                    boolean inv = true;
+
                     if (board.destInv(src, dest)) {
 
                         selectedPiece = null;
@@ -63,18 +65,36 @@ public class ChessBoardGUI extends JPanel {
                         JOptionPane.showMessageDialog(null, "Invalid Move");
                     } else {
                         try {
-                            board.play(CoordinateEnum.getCoordinateEnum(selectedCol, SIZE - 1 - selectedRow), CoordinateEnum.getCoordinateEnum(col, SIZE - 1 - row), selectedPiece.getPieceColor());
+                            if(Objects.equals(selectedPiece.getPieceName(), "Pawn")&&(Objects.equals(selectedPiece.getPieceColor(), "White") &&row==0|| Objects.equals(selectedPiece.getPieceColor(), "Black") &&row==7))
+                            {
+                                String[] options = {"Queen", "Rook", "Bishop", "Knight"};
+                                String temp;
+                                int x = JOptionPane.showOptionDialog(null, "Choose a piece to promote the pawn to:", "Pawn Promotion", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+//                                int x = JOptionPane.showOptionDialog(null, "Choose a piece to promote to", "Promotion", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+                                if(x==0)
+                                    temp = "Q";
+
+                                else if(x==1)
+                                    temp ="R";
+                                else if(x==2)
+                                    temp = "B";
+                                else if(x==3)
+                                    temp = "N";
+                                else
+                                    temp = "Q";
+                                board.play(CoordinateEnum.getCoordinateEnum(selectedCol, SIZE - 1 - selectedRow), CoordinateEnum.getCoordinateEnum(col, SIZE - 1 - row), temp);
+
+                            }
+                            else
+                            {
+                                board.play(CoordinateEnum.getCoordinateEnum(selectedCol, SIZE - 1 - selectedRow), CoordinateEnum.getCoordinateEnum(col, SIZE - 1 - row), "");
+                            }
                         } catch (Exception ex) {
                             System.out.println(ex.getMessage());
-                            inv = false;
-
-                            JOptionPane.showMessageDialog(null, "Invalid move");
                         }
-                        if (inv) {
-                            selectedPiece = null;
-                            selectedRow = -1;
-                            selectedCol = -1;
-                        }
+                        selectedPiece = null;
+                        selectedRow = -1;
+                        selectedCol = -1;
                         // Update the board
                         repaint();
                     }
@@ -103,18 +123,21 @@ public class ChessBoardGUI extends JPanel {
                     Image image = imageIcon.getImage();
                     // Draw the image
                     g.drawImage(image, col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE, this);
+                    if (p.getPieceName().equals("King") && KingPiece.isKingAtRisk(p.getPieceColor())) {
+                    g.setColor(Color.RED);
+                    g.drawRect(col * SQUARE_SIZE+5, row * SQUARE_SIZE+5, SQUARE_SIZE-10, SQUARE_SIZE-10);}
                 }
 
 
                 // If this square is the selected square, draw a border around it
-                if (selectedPiece != null && selectedRow == row && selectedCol == col) {
-                    List<CoordinateEnum> temp = board.getChessBoardPiece(CoordinateEnum.getCoordinateEnum(col, SIZE - row - 1)).getValidMoves();
+                // If this square is the selected square, draw a border around it
+                // If this square is the selected square, draw a border around it
+                if (selectedPiece != null) {
+                    List<CoordinateEnum> temp = selectedPiece.getValidMoves();
                     g.setColor(Color.BLUE);
-                    g.drawRect(col * SQUARE_SIZE+5, row * SQUARE_SIZE+5, SQUARE_SIZE-10, SQUARE_SIZE-10);
-                    System.out.println(temp);
-                    for(CoordinateEnum c : temp)
-                    { g.setColor(Color.BLUE);
-                    g.drawRect(c.getXCoordinate() * SQUARE_SIZE+5, (SIZE-1-c.getYCoordinate() )* SQUARE_SIZE+5, SQUARE_SIZE-10, SQUARE_SIZE-10);}
+                    for(CoordinateEnum c : temp) {
+                        g.drawRect(c.getXCoordinate() * SQUARE_SIZE+5, (SIZE-1-c.getYCoordinate() )* SQUARE_SIZE+5, SQUARE_SIZE-10, SQUARE_SIZE-10);
+                    }
                 }
 
                 // Add text to the square
@@ -126,7 +149,7 @@ public class ChessBoardGUI extends JPanel {
                 if (col == 0) {
                     g.setColor(Color.BLACK);
                     g.setFont(new Font("Default", Font.BOLD, 20));
-                    g.drawString(SIZE- row+ "", col * SQUARE_SIZE, row * SQUARE_SIZE + g.getFontMetrics().getAscent());
+                    g.drawString(SIZE- row+ "", 0, row * SQUARE_SIZE + g.getFontMetrics().getAscent());
                 }
             }
         }

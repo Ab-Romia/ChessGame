@@ -41,6 +41,10 @@ public class KingPiece extends Piece {
 
         possibleMoves.add(CoordinateEnum.getCoordinateEnum(xCoor, yCoor + 1));
         possibleMoves.add(CoordinateEnum.getCoordinateEnum(xCoor, yCoor - 1));
+        if(isLeftCastling(CoordinateEnum.getCoordinateEnum(xCoor-2, yCoor)))
+            possibleMoves.add(CoordinateEnum.getCoordinateEnum(xCoor-2, yCoor));
+        if(isRightCastling(CoordinateEnum.getCoordinateEnum(xCoor+2, yCoor)))
+            possibleMoves.add(CoordinateEnum.getCoordinateEnum(xCoor+2, yCoor));
 
         return possibleMoves;
 
@@ -194,6 +198,7 @@ public class KingPiece extends Piece {
         List<CoordinateEnum> possibleMoves = getPossibleMoves();
         if (KingPiece.isKingAtRisk(this.getPieceColor())) {
             //for all possibleMoves of kingPiece is king safe//
+
             for (int i = 0 ; i < possibleMoves.size() ; i++) {
                 if(possibleMoves.get(i) == null)
                     continue;
@@ -222,7 +227,10 @@ public class KingPiece extends Piece {
                }
 
             }
-            possibleMoves.removeIf(Objects::isNull);
+            //If castling is a possible move check if it is valid
+
+
+                possibleMoves.removeIf(Objects::isNull);
             return possibleMoves;
         }
         possibleMoves.removeIf(Objects::isNull);
@@ -231,6 +239,8 @@ public class KingPiece extends Piece {
                 possibleMoves.set(i, null);
             }
         }
+        //check if castling is available if so add to valid moves
+
         possibleMoves.removeIf(Objects::isNull);
         return possibleMoves;
     }

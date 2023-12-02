@@ -209,9 +209,11 @@ public class PawnPiece extends Piece {
             if (dstPiece != null&&Objects.equals(dstPiece.getPieceColor(), this.getPieceColor()))
                     return false;
 
-            if (dstPiece == null)
+            if (dstPiece == null) {
+                if(isInCheck(this.getCurrentCoordinate(),destinationCoordinate))
+                    return false;
                 return this.getCurrentCoordinate().getXCoordinate() == destinationCoordinate.getXCoordinate();
-
+            }
             return !isInCheck(this.getCurrentCoordinate(), destinationCoordinate);
         }
         if (!isPromoted()) {
@@ -230,7 +232,7 @@ public class PawnPiece extends Piece {
         else {
             this.setPiece(chessBoardInstance.getChessBoardPiece(this.getCurrentCoordinate()));
             testIsEnPassantValid();
-            return true;
+            return !isInCheck(this.getCurrentCoordinate(), destinationCoordinate);
         }
     }
 
