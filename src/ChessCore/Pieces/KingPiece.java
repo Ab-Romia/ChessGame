@@ -58,8 +58,13 @@ public class KingPiece extends Piece {
                 Piece piece = chessBoard.getChessBoardPiece(i, j);
                 KingPiece kp = getKingPieceByColor(getPieceColor());
                 chessBoard.setPieceInCoordinate(kp.getCurrentCoordinate(), null);
-
-                if (piece != null
+                if (piece instanceof PawnPiece &&!Objects.equals(piece.getPieceColor(), this.getPieceColor())&&piece.getCurrentCoordinate().getXCoordinate()!=xCoor&&piece.getPossibleMoves().contains(getCoordinateEnum(xCoor, yCoor)))
+                {
+                    chessBoard.setPieceInCoordinate(kp.getCurrentCoordinate(), kp);
+                    return false;
+                }
+                else
+                 if (piece != null
                         && !Objects.equals(piece.getPieceColor(), this.getPieceColor())
                         && (piece.isValidMove(CoordinateEnum.getCoordinateEnum(xCoor, yCoor)))) {
 //                    System.out.println("King is not safe");

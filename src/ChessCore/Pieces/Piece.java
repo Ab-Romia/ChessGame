@@ -24,7 +24,6 @@ public abstract class Piece {
     private CoordinateEnum currentCoordinate;
     private Piece piece;
 
-
     public void setPiece(Piece piece) {
         this.piece = piece;
     }
@@ -48,9 +47,7 @@ public abstract class Piece {
         this.currentCoordinate = newCoordinate;
     }
 
-    public List<CoordinateEnum> getPossibleMoves() {
-        return null;
-    }
+    public abstract List<CoordinateEnum>  getPossibleMoves();
 
 
     public Boolean isThereObstacle(CoordinateEnum destCoor) {
