@@ -23,6 +23,7 @@ public class PawnPiece extends Piece {
     private final String pieceName = PAWN_PIECE_NAME;
     private final String PC =  this.getPieceColor()+ pieceName;
     private int initSquareMovement = 0;
+    private boolean passant = true;
     private boolean isEnPassantValid = true;
     private String promoteTo = "";
 
@@ -31,7 +32,7 @@ public class PawnPiece extends Piece {
     }
 
 
-    private void testIsEnPassantValid() {
+    public void testIsEnPassantValid() {
 //        System.out.println("Piece at " + this.getCurrentCoordinate());
 //        if (this.getCurrentCoordinate() == f7) {
 //            System.out.println("");
@@ -43,15 +44,20 @@ public class PawnPiece extends Piece {
             if (piece instanceof PawnPiece) {
                 PawnPiece p = (PawnPiece) piece;
                 CoordinateEnum pawnPieceCoor = CoordinateEnum.getCoordinateEnum(row, col);
-                if (p.getPieceColor().equals(this.getPieceColor())) {
+                if (p.getPieceColor().equals(this.getPieceColor())||p.initSquareMovement!=2) {
 //                System.out.print(pawnPiece.getCurrentCoordinate() + " *");
                     p.isEnPassantValid = false;
-                    chessBoard.setPieceInCoordinate(pawnPieceCoor, piece);
+//                    chessBoard.setPieceInCoordinate(pawnPieceCoor, piece);
                 }
             }
         }
 //        System.out.println();
-        this.isEnPassantValid = true;
+        if(!passant)
+            this.isEnPassantValid = false;
+        else {
+            this.isEnPassantValid = true;
+            passant = false;
+        }
     }
 
     public boolean isEnPassantValid() {
@@ -194,7 +200,6 @@ public class PawnPiece extends Piece {
         if (isEnPessant(destinationCoordinate)) {
 //            ChessBoard.addToOutputs(ENPASSANT);
 //            System.out.println(ENPASSANT);
-            testIsEnPassantValid();
             if(isInCheck(this.getCurrentCoordinate(), destinationCoordinate)) {
                 return false;
             }
@@ -224,14 +229,14 @@ public class PawnPiece extends Piece {
                         return false;
                     }
                 }
-                testIsEnPassantValid();
+
                 return !isInCheck(this.getCurrentCoordinate(), destinationCoordinate);
             }
             return false;
         }
         else {
             this.setPiece(chessBoardInstance.getChessBoardPiece(this.getCurrentCoordinate()));
-            testIsEnPassantValid();
+
             return !isInCheck(this.getCurrentCoordinate(), destinationCoordinate);
         }
     }
@@ -253,9 +258,7 @@ public class PawnPiece extends Piece {
 
     }
     public Boolean isEnPessant(CoordinateEnum destCoor) {
-        if (destCoor == d6){
-//            System.out.println("");
-        }
+
         ChessBoard chessBoard = ChessBoard.getInstance();
         int xCoor = this.getCurrentCoordinate().getXCoordinate();
         int yCoor = this.getCurrentCoordinate().getYCoordinate();
@@ -265,7 +268,9 @@ public class PawnPiece extends Piece {
         int sign = destCoorX - xCoor; // left or right
         CoordinateEnum coordinateEnum = CoordinateEnum.getCoordinateEnum(xCoor + sign, yCoor);
         Piece p = chessBoard.getChessBoardPiece(coordinateEnum);
+
         if (p instanceof PawnPiece) {
+
             PawnPiece pawnPiece = (PawnPiece) p;
             if (!pawnPiece.isEnPassantValid) {
                 return false;
@@ -278,7 +283,7 @@ public class PawnPiece extends Piece {
             if (pawnPiece.initSquareMovement != 2) {
                 return false;
             }
-            if ((yCoor == 3 || yCoor == 4) && (destCoorX == xCoor + sign && destCoorY == (yCoor + pieceColorSign))) {
+            if ((yCoor == 4 && pawnPiece.getPieceColor().equals(BLACK) || yCoor == 3 &&pawnPiece.getPieceColor().equals(WHITE)) && (destCoorX == xCoor + sign && destCoorY == (yCoor + pieceColorSign))) {
                 Piece piece = chessBoard.getChessBoardPiece(xCoor + sign, yCoor);
                 return (piece != null)
                         && (!piece.getPieceColor().equals(this.getPieceColor()))

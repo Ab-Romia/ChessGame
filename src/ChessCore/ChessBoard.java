@@ -156,7 +156,7 @@ public class ChessBoard {
     public void play(CoordinateEnum srcCoor, CoordinateEnum destCoor, String name) throws Exception {
         Piece srcPiece = chessBoardInstance.getChessBoardPiece(srcCoor);
         Piece destPiece = chessBoardInstance.getChessBoardPiece(destCoor);
-        if (srcCoor == c3 && destCoor == c4){
+        if (srcCoor == d5&& destCoor == e4){
             System.out.println("");
         }
 
@@ -179,6 +179,7 @@ public class ChessBoard {
             if (srcPiece instanceof PawnPiece) {
                 PawnPiece pawnPiece = (PawnPiece) srcPiece;
                 pawnPiece.setPromoteTo(name);
+                pawnPiece.testIsEnPassantValid();
             }
            if (getChessBoardPiece(srcCoor).isValidMove(destCoor)) {
                 srcPiece = this.getChessBoardPiece(srcPiece.getCurrentCoordinate());

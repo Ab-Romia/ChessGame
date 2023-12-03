@@ -1,7 +1,7 @@
 package BoardGUI;
 
 
-import java.util.List;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -11,6 +11,10 @@ import java.util.Objects;
 import ChessCore.ChessBoard;
 import ChessCore.Enum.*;
 import ChessCore.Pieces.*;
+import Exceptions.GamedEnded;
+import Exceptions.Insufficient;
+import Exceptions.InvalidMove;
+import Exceptions.Won;
 
 public class ChessBoardGUI extends JPanel {
     private static final int SIZE = 8;
@@ -23,86 +27,99 @@ public class ChessBoardGUI extends JPanel {
 //    private boolean turn = true;
     private int selectedRow = -1;
     private int selectedCol = -1;
+    boolean turn = true;
     public ChessBoardGUI() {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+
+
                 int col = e.getX() / SQUARE_SIZE;
                 int row = e.getY() / SQUARE_SIZE;
-                if (selectedPiece == null) {
 
-                    System.out.println("Selected: " + CoordinateEnum.getCoordinateEnum(col, SIZE-row-1));
-                    selectedPiece = board.getChessBoardPiece(CoordinateEnum.getCoordinateEnum(col, SIZE-row-1));
-                    selectedRow = row;
-                    selectedCol = col;
-                    if(selectedPiece!=null&&board.srcInv(selectedPiece.getCurrentCoordinate()))
-                    {
-                        JOptionPane.showMessageDialog(null, "Invalid move");
-                        selectedPiece = null;
-                        selectedRow = -1;
-                        selectedCol = -1;
+                    if (selectedPiece == null) {
 
-                    }
-                    try {
-                        if (!Objects.equals(board.getCurrentTurnColor(), selectedPiece.getPieceColor())) {
-                            JOptionPane.showMessageDialog(null, board.getCurrentTurnColor() + "'s turn");
+                        System.out.println("Selected: " + CoordinateEnum.getCoordinateEnum(col, SIZE - row - 1));
+                        selectedPiece = board.getChessBoardPiece(CoordinateEnum.getCoordinateEnum(col, SIZE - row - 1));
+                        selectedRow = row;
+                        selectedCol = col;
+                        if (selectedPiece != null && board.srcInv(selectedPiece.getCurrentCoordinate())) {
+                            JOptionPane.showMessageDialog(null, "Invalid move");
                             selectedPiece = null;
                             selectedRow = -1;
                             selectedCol = -1;
+
                         }
-                    }catch(NullPointerException ex)
-                    {
-                        System.out.println(ex.getMessage());
-                    }
-
-                    repaint();
-                } else {
-                    // Move the selected piece
-                    CoordinateEnum src = CoordinateEnum.getCoordinateEnum(selectedCol, SIZE - 1 - selectedRow);
-                    CoordinateEnum dest = CoordinateEnum.getCoordinateEnum(col, SIZE - 1 - row);
-
-                    if (board.destInv(src, dest)) {
-
-                        selectedPiece = null;
-                        selectedRow = -1;
-                        selectedCol = -1;
-                        JOptionPane.showMessageDialog(null, "Invalid Move");
-                    } else {
                         try {
-                            if(Objects.equals(selectedPiece.getPieceName(), "Pawn")&&(Objects.equals(selectedPiece.getPieceColor(), "White") &&row==0&&selectedCol==1|| Objects.equals(selectedPiece.getPieceColor(), "Black") &&row==7&&selectedCol==6))
-                            {
-                                String[] options = {"Queen", "Rook", "Bishop", "Knight"};
-                                String temp;
-                                int x = JOptionPane.showOptionDialog(null, "Choose a piece to promote the pawn to:", "Pawn Promotion", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
-//                                int x = JOptionPane.showOptionDialog(null, "Choose a piece to promote to", "Promotion", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
-                                if(x==0)
-                                    temp = "Q";
-
-                                else if(x==1)
-                                    temp ="R";
-                                else if(x==2)
-                                    temp = "B";
-                                else if(x==3)
-                                    temp = "K";
-                                else
-                                    temp = "Q";
-                                board.play(CoordinateEnum.getCoordinateEnum(selectedCol, SIZE - 1 - selectedRow), CoordinateEnum.getCoordinateEnum(col, SIZE - 1 - row), temp);
-
+                            if (!Objects.equals(board.getCurrentTurnColor(), selectedPiece.getPieceColor())) {
+                                JOptionPane.showMessageDialog(null, board.getCurrentTurnColor() + "'s turn");
+                                selectedPiece = null;
+                                selectedRow = -1;
+                                selectedCol = -1;
                             }
-                            else
-                            {
-                                board.play(CoordinateEnum.getCoordinateEnum(selectedCol, SIZE - 1 - selectedRow), CoordinateEnum.getCoordinateEnum(col, SIZE - 1 - row), "");
-                            }
-                        } catch (Exception ex) {
+                        } catch (NullPointerException ex) {
                             System.out.println(ex.getMessage());
                         }
-                        selectedPiece = null;
-                        selectedRow = -1;
-                        selectedCol = -1;
-                        // Update the board
+
                         repaint();
+                    } else {
+                        // Move the selected piece
+                        CoordinateEnum src = CoordinateEnum.getCoordinateEnum(selectedCol, SIZE - 1 - selectedRow);
+                        CoordinateEnum dest = CoordinateEnum.getCoordinateEnum(col, SIZE - 1 - row);
+
+                        if (board.destInv(src, dest)) {
+
+                            selectedPiece = null;
+                            selectedRow = -1;
+                            selectedCol = -1;
+                            JOptionPane.showMessageDialog(null, "Invalid Move");
+                        } else {
+                            try {
+                                if (Objects.equals(selectedPiece.getPieceName(), "Pawn") && (Objects.equals(selectedPiece.getPieceColor(), "White") && row == 0 && selectedRow == 1 || Objects.equals(selectedPiece.getPieceColor(), "Black") && row == 7 && selectedRow == 6)) {
+                                    String[] options = {"Queen", "Rook", "Bishop", "Knight"};
+                                    String temp;
+                                    int x = JOptionPane.showOptionDialog(null, "Choose a piece to promote the pawn to:", "Pawn Promotion", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+//                                int x = JOptionPane.showOptionDialog(null, "Choose a piece to promote to", "Promotion", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
+                                    if (x == 0)
+                                        temp = "Q";
+
+                                    else if (x == 1)
+                                        temp = "R";
+                                    else if (x == 2)
+                                        temp = "B";
+                                    else if (x == 3)
+                                        temp = "K";
+                                    else
+                                        temp = "Q";
+                                    board.play(CoordinateEnum.getCoordinateEnum(selectedCol, SIZE - 1 - selectedRow), CoordinateEnum.getCoordinateEnum(col, SIZE - 1 - row), temp);
+
+                                } else {
+                                    board.play(CoordinateEnum.getCoordinateEnum(selectedCol, SIZE - 1 - selectedRow), CoordinateEnum.getCoordinateEnum(col, SIZE - 1 - row), "");
+                                }
+                            }
+                            catch (Won | Insufficient w) {
+
+                                JOptionPane.showMessageDialog(null, w.getMessage());
+
+                            } catch (NullPointerException | InvalidMove ex) {
+                                System.out.println(ex.getMessage());
+                            }
+
+                         catch (GamedEnded ge) {
+                            JOptionPane.showMessageDialog(null, ge.getMessage());
+                            System.exit(0);}
+                            catch (Exception ex) {
+                                JOptionPane.showMessageDialog(null, ex.getMessage());
+                                throw new RuntimeException(ex);
+                            }
+                            selectedPiece = null;
+                            selectedRow = -1;
+                            selectedCol = -1;
+                            // Update the board
+                            repaint();
+                        }
                     }
-                }
+
             }
         });
     }

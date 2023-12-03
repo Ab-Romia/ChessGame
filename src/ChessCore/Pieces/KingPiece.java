@@ -56,15 +56,22 @@ public class KingPiece extends Piece {
         for (int i = 0 ; i < 8 ; i++) {
             for (int j = 0 ;j < 8 ; j++) {
                 Piece piece = chessBoard.getChessBoardPiece(i, j);
+                KingPiece kp = getKingPieceByColor(getPieceColor());
+                chessBoard.setPieceInCoordinate(kp.getCurrentCoordinate(), null);
 
                 if (piece != null
                         && !Objects.equals(piece.getPieceColor(), this.getPieceColor())
                         && (piece.isValidMove(CoordinateEnum.getCoordinateEnum(xCoor, yCoor)))) {
 //                    System.out.println("King is not safe");
-                    if(Objects.equals(piece.getPieceName(), PAWN_PIECE_NAME)&&i==xCoor)
+                    if(Objects.equals(piece.getPieceName(), PAWN_PIECE_NAME)&&i==xCoor) {
+                        chessBoard.setPieceInCoordinate(kp.getCurrentCoordinate(), kp);
                         return true;
+                    }
+                    chessBoard.setPieceInCoordinate(kp.getCurrentCoordinate(), kp);
                     return false;
                 }
+                else
+                    chessBoard.setPieceInCoordinate(kp.getCurrentCoordinate(), kp);
             }
         }
         return true;
@@ -86,12 +93,11 @@ public class KingPiece extends Piece {
             if (destCoor != g8)
                 return false;
         }
-        boolean isKingPiece = chessBoard.getChessBoardPiece(kingCoor).getPieceName().equals(KING_PIECE_NAME);
-        boolean isRookPiece = chessBoard.getChessBoardPiece(rookCoor).getPieceName().equals(ROOK_PIECE_NAME);
 
-        if (!isKingPiece || !isRookPiece) {
-            return false;
-        }
+
+        if(chessBoard.getChessBoardPiece(kingCoor)!=null&&chessBoard.getChessBoardPiece(rookCoor)!=null)
+            if(!chessBoard.getChessBoardPiece(kingCoor).getPieceName().equals(KING_PIECE_NAME)||!chessBoard.getChessBoardPiece(rookCoor).getPieceName().equals(ROOK_PIECE_NAME))
+                 return false;
 
         CoordinateEnum bishopCoor = CoordinateEnum.getCoordinateEnum(kingXCoor + 1, kingYCoor);
         CoordinateEnum horseCoor = CoordinateEnum.getCoordinateEnum(kingXCoor + 2, kingYCoor);
@@ -166,15 +172,15 @@ public class KingPiece extends Piece {
         List<CoordinateEnum> possibleMoves = this.getPossibleMoves();
         if (isRightCastling(destCoor)) {
 //            System.out.println(CASTLE);
-            return isRightCastling(destCoor);
+            return isRightCastling(destCoor)&&isKingSafe(destCoor.getXCoordinate(), destCoor.getYCoordinate());
         } else if (isLeftCastling(destCoor)) {
 //            System.out.println(CASTLE);
-            return isLeftCastling(destCoor);
+            return isLeftCastling(destCoor)&&isKingSafe(destCoor.getXCoordinate(), destCoor.getYCoordinate());
         } else {
             if (possibleMoves.contains(destCoor)) {
                 Piece piece = chessBoardInstance.getChessBoardPiece(destCoor);
                 if (piece != null) {
-                    return !Objects.equals(piece.getPieceColor(), this.getPieceColor());
+                    return !Objects.equals(piece.getPieceColor(), this.getPieceColor())&&isKingSafe(destCoor.getXCoordinate(), destCoor.getYCoordinate());
                 }
                 return isKingSafe(destCoor.getXCoordinate(), destCoor.getYCoordinate());
             }
@@ -305,7 +311,7 @@ public class KingPiece extends Piece {
             return false;
 
 //        return kingPiece.getValidMoves().isEmpty();
-        return !kingPiece.isThereValidMoves(color);
+        return true;
     }
     
 }
