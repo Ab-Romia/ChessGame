@@ -66,7 +66,7 @@ public class KingPiece extends Piece {
                 else
                  if (piece != null
                         && !Objects.equals(piece.getPieceColor(), this.getPieceColor())
-                        && (piece.isValidMove(CoordinateEnum.getCoordinateEnum(xCoor, yCoor)))) {
+                        && (piece.isValidMove(CoordinateEnum.getCoordinateEnum(xCoor, yCoor),true))) {
 //                    System.out.println("King is not safe");
                     if(Objects.equals(piece.getPieceName(), PAWN_PIECE_NAME)&&i==xCoor) {
                         chessBoard.setPieceInCoordinate(kp.getCurrentCoordinate(), kp);
@@ -191,6 +191,11 @@ public class KingPiece extends Piece {
             }
             return false;
         }
+    }
+
+    @Override
+    public Boolean isValidMove(CoordinateEnum destinationCoordinate, boolean king) {
+        return false;
     }
 
     public void doRightCastle(CoordinateEnum destCoor) {

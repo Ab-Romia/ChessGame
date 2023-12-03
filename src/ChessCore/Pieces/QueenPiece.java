@@ -65,6 +65,30 @@ public class QueenPiece extends Piece {
         }
         return false;
     }
+    @Override
+    public Boolean isValidMove(CoordinateEnum destinationCoordinate, boolean isCheck) {
+        ChessBoard chessBoardInstance = ChessBoard.getInstance();
+        Piece srcPiece = chessBoardInstance.getChessBoardPiece(this.getCurrentCoordinate());
+        Piece dstPiece = chessBoardInstance.getChessBoardPiece(destinationCoordinate);
+        List<CoordinateEnum> possibleMoves = this.getPossibleMoves();
+
+        if (possibleMoves.contains(destinationCoordinate)) {
+            Piece piece = chessBoardInstance.getChessBoardPiece(destinationCoordinate);
+            if (isThereObstacle(destinationCoordinate)) {
+                return false;
+            }
+            if (piece != null) {
+                if(isThereObstacle(destinationCoordinate)) {
+                    return false;
+                }
+
+            }
+
+            if(!isInCheck(this.getCurrentCoordinate(),destinationCoordinate))
+                return true;
+        }
+        return false;
+    }
 
     @Override
     public List<CoordinateEnum> getValidMoves() {

@@ -132,6 +132,7 @@ public abstract class Piece {
     }
 
     public abstract Boolean isValidMove(CoordinateEnum destinationCoordinate);
+    public abstract Boolean isValidMove(CoordinateEnum destinationCoordinate, boolean king);
     //A method that returns true a coordinate in the board is attacked by a piece of the opposite color//
     public Boolean isAttacked(CoordinateEnum coordinate) {
         ChessBoard chessBoardInstance = ChessBoard.getInstance();

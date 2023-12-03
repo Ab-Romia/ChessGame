@@ -60,6 +60,29 @@ public class BishopPiece extends Piece {
         }
         return false;
     }
+    @Override
+    public Boolean isValidMove(CoordinateEnum destinationCoordinate, boolean isCheck) {
+        ChessBoard chessBoardInstance = ChessBoard.getInstance();
+        List<CoordinateEnum> possibleMoves = this.getPossibleMoves();
+        Piece srcPiece = chessBoardInstance.getChessBoardPiece(this.getCurrentCoordinate());
+        if (possibleMoves.contains(destinationCoordinate)) {
+            Piece piece = chessBoardInstance.getChessBoardPiece(destinationCoordinate);
+            if (isThereObstacle(destinationCoordinate)) {
+                return false;
+            }
+            if (piece != null) {
+                if(isThereObstacle(destinationCoordinate)) {
+                    return false;
+                }
+                return true;
+            }
+            if (isInCheck(this.getCurrentCoordinate(), destinationCoordinate)) {
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
 
     @Override
     public List<CoordinateEnum> getValidMoves() {

@@ -44,6 +44,7 @@ public class KnightPiece extends Piece {
                 possibleMoves.add(CoordinateEnum.getCoordinateEnum(xCorr - 2, yCorr - 1));
         return possibleMoves;
     }
+    @Override
     public Boolean isValidMove(CoordinateEnum destinationCoordinate){
         ChessBoard chessBoardInstance = ChessBoard.getInstance();
         List<CoordinateEnum> possibleMoves = this.getPossibleMoves();
@@ -56,6 +57,21 @@ public class KnightPiece extends Piece {
                     return false;
                 }
             }
+            if (isInCheck(this.getCurrentCoordinate(), destinationCoordinate)) {
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+    @Override
+    public Boolean isValidMove(CoordinateEnum destinationCoordinate, boolean isCheck){
+        ChessBoard chessBoardInstance = ChessBoard.getInstance();
+        List<CoordinateEnum> possibleMoves = this.getPossibleMoves();
+        Piece srcPiece = chessBoardInstance.getChessBoardPiece(this.getCurrentCoordinate());
+        Piece dstPiece = chessBoardInstance.getChessBoardPiece(destinationCoordinate);
+        if (possibleMoves.contains(destinationCoordinate)) {
+
             if (isInCheck(this.getCurrentCoordinate(), destinationCoordinate)) {
                 return false;
             }

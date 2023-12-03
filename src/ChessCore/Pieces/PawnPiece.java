@@ -240,6 +240,50 @@ public class PawnPiece extends Piece {
             return !isInCheck(this.getCurrentCoordinate(), destinationCoordinate);
         }
     }
+ @Override
+    public Boolean isValidMove(CoordinateEnum destinationCoordinate, boolean isCheck) {
+        ChessBoard chessBoardInstance = ChessBoard.getInstance();
+        Piece srcPiece = chessBoardInstance.getChessBoardPiece(this.getCurrentCoordinate());
+        Piece dstPiece = chessBoardInstance.getChessBoardPiece(destinationCoordinate);
+        List<CoordinateEnum> possibleMoves = this.getPossibleMoves();
+        if (this.getCurrentCoordinate().getYCoordinate() == 1 || this.getCurrentCoordinate().getYCoordinate() == 6) {
+            if (destinationCoordinate.getYCoordinate() == 3 || destinationCoordinate.getYCoordinate() == 4) {
+                this.initSquareMovement = 2;
+            }
+        }
+        if (isEnPessant(destinationCoordinate)) {
+//            ChessBoard.addToOutputs(ENPASSANT);
+//            System.out.println(ENPASSANT);
+            if(isInCheck(this.getCurrentCoordinate(), destinationCoordinate)) {
+                return false;
+            }
+            return true;
+        }
+
+        if (getValidMoves().contains(destinationCoordinate)) {
+
+
+            if (dstPiece == null) {
+                if(isInCheck(this.getCurrentCoordinate(),destinationCoordinate))
+                    return false;
+                return this.getCurrentCoordinate().getXCoordinate() == destinationCoordinate.getXCoordinate();
+            }
+            return !isInCheck(this.getCurrentCoordinate(), destinationCoordinate);
+        }
+        if (!isPromoted()) {
+            if (getValidMoves().contains(destinationCoordinate)) {
+
+
+                return !isInCheck(this.getCurrentCoordinate(), destinationCoordinate);
+            }
+            return false;
+        }
+        else {
+            this.setPiece(chessBoardInstance.getChessBoardPiece(this.getCurrentCoordinate()));
+
+            return !isInCheck(this.getCurrentCoordinate(), destinationCoordinate);
+        }
+    }
 
     public void doEnpassant(CoordinateEnum destCoor)
     {

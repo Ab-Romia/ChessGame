@@ -156,7 +156,7 @@ public class ChessBoard {
     public void play(CoordinateEnum srcCoor, CoordinateEnum destCoor, String name) throws Exception {
         Piece srcPiece = chessBoardInstance.getChessBoardPiece(srcCoor);
         Piece destPiece = chessBoardInstance.getChessBoardPiece(destCoor);
-        if (srcCoor == d8&& destCoor == h4){
+        if (srcCoor == e8&& destCoor == f7){
             System.out.println("");
         }
 
