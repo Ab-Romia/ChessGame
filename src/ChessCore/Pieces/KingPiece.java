@@ -316,7 +316,9 @@ public class KingPiece extends Piece {
             return false;
 
 //        return kingPiece.getValidMoves().isEmpty();
-        return true;
+        //return if there exist a valid move on the board
+        return !kingPiece.isThereValidMoves(color);
+
     }
     
 }

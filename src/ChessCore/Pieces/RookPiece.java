@@ -78,7 +78,7 @@ public class RookPiece extends Piece {
         possibleMoves.removeIf(Objects::isNull);
         for (int i = 0 ; i < possibleMoves.size() ; i++) {
             if (chessBoardInstance.getChessBoardPiece(possibleMoves.get(i)) != null
-                    || this.isThereObstacle(possibleMoves.get(i))) {
+                    || (possibleMoves.get(i)!=null)&&this.isThereObstacle(possibleMoves.get(i))) {
                 possibleMoves.set(i, null);
             }
         }

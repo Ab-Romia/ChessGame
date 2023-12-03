@@ -79,7 +79,7 @@ public class QueenPiece extends Piece {
             if(!isValidMove(possibleMoves.get(i)))
                 possibleMoves.set(i,null);
             if ( ( piece!= null && piece.getPieceColor().equals(this.getPieceColor()) )
-                    || this.isThereObstacle(possibleMoves.get(i))) {
+                    || (possibleMoves.get(i)!=null)&&this.isThereObstacle(possibleMoves.get(i))) {
                 possibleMoves.set(i, null);
             }
         }

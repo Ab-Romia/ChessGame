@@ -69,7 +69,7 @@ public class BishopPiece extends Piece {
         for (int i = 0 ; i < possibleMoves.size() ; i++) {
             Piece piece = chessBoardInstance.getChessBoardPiece(possibleMoves.get(i));
             if ( ( piece!= null && piece.getPieceColor().equals(this.getPieceColor()) )
-                    || this.isThereObstacle(possibleMoves.get(i))) {
+                    || (possibleMoves.get(i)!=null)&&this.isThereObstacle(possibleMoves.get(i))) {
                 possibleMoves.set(i, null);
             }
         }
