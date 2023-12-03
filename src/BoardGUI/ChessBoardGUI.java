@@ -180,7 +180,7 @@ public class ChessBoardGUI extends JPanel {
                 if (col == 0) {
                     g.setColor(Color.BLACK);
                     g.setFont(new Font("Default", Font.BOLD, 20));
-                    g.drawString(SIZE- row+ "", 0, row * SQUARE_SIZE + g.getFontMetrics().getAscent());
+                    g.drawString(SIZE- rowF+ "", 0, row * SQUARE_SIZE + g.getFontMetrics().getAscent());
                 }
             }
         }

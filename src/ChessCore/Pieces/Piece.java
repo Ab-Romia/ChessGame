@@ -117,9 +117,13 @@ public abstract class Piece {
             validPieceColor = destPiece.getPieceColor();
             validPieceName = destPiece.getPieceName();
         }
-
+        KingPiece kingPiece =  KingPiece.getKingPieceByColor(this.getPieceColor());
         chessBoardInstance.setChessBoardPiece(srcCoor, destCoor);
-        if (KingPiece.isKingAtRisk(this.getPieceColor())) {
+        if (destPiece!=null&&destPiece.getPieceName().equals(KING_PIECE_NAME)&&KingPiece.isKingAtRisk(this.getPieceColor())) {
+            undoMove(validPieceColor, validPieceName, srcCoor, destCoor);
+            return false;
+        }
+        if ((kingPiece!=null)&&KingPiece.isKingAtRisk(this.getPieceColor())) {
             undoMove(validPieceColor, validPieceName, srcCoor, destCoor);
             return true;
         }

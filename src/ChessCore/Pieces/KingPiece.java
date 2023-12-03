@@ -216,7 +216,7 @@ public class KingPiece extends Piece {
 
     }
 
-    private static KingPiece getKingPieceByColor(String color) {
+    public static KingPiece getKingPieceByColor(String color) {
         ChessBoard chessBoardInstance = ChessBoard.getInstance();
         for (int i = 0 ; i < 8 ; i++) {
             for (int j = 0; j < 8; j++) {

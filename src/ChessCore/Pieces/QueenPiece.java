@@ -7,10 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static ChessCore.Utils.Constants.BLACK;
-import static ChessCore.Utils.Constants.IN_CHECK;
-import static ChessCore.Utils.Constants.QUEEN_PIECE_NAME;
-import static ChessCore.Utils.Constants.WHITE;
+import static ChessCore.Utils.Constants.*;
 
 public class QueenPiece extends Piece {
     private final String pieceName = QUEEN_PIECE_NAME;
