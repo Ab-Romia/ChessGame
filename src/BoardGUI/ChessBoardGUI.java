@@ -11,10 +11,7 @@ import java.util.Objects;
 import ChessCore.ChessBoard;
 import ChessCore.Enum.*;
 import ChessCore.Pieces.*;
-import Exceptions.GamedEnded;
-import Exceptions.Insufficient;
-import Exceptions.InvalidMove;
-import Exceptions.Won;
+import Exceptions.*;
 
 public class ChessBoardGUI extends JPanel {
     private static final int SIZE = 8;
@@ -24,18 +21,24 @@ public class ChessBoardGUI extends JPanel {
     private final char[] letters = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
     private final ChessBoard board = ChessBoard.getInstance();
     private Piece selectedPiece = null;
+
+    private boolean flip = false;
 //    private boolean turn = true;
     private int selectedRow = -1;
     private int selectedCol = -1;
-    boolean turn = true;
+
     public ChessBoardGUI() {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-
-
                 int col = e.getX() / SQUARE_SIZE;
                 int row = e.getY() / SQUARE_SIZE;
+                if(flip)
+                {
+//                    col = SIZE - 1 - col;
+                    row = SIZE - 1 - row;
+                }
+
 
                     if (selectedPiece == null) {
 
@@ -96,8 +99,9 @@ public class ChessBoardGUI extends JPanel {
                                 } else {
                                     board.play(CoordinateEnum.getCoordinateEnum(selectedCol, SIZE - 1 - selectedRow), CoordinateEnum.getCoordinateEnum(col, SIZE - 1 - row), "");
                                 }
+                                flip = !flip;
                             }
-                            catch (Won | Insufficient w) {
+                            catch (Won | Insufficient | Stalemate w) {
 
                                 JOptionPane.showMessageDialog(null, w.getMessage());
 
@@ -128,8 +132,12 @@ public class ChessBoardGUI extends JPanel {
         super.paintComponent(g);
         for (int col = 0; col < SIZE; col++) {
             for (int row = 0; row < SIZE; row++) {
-
-                if ((row + col) % 2 == 0) {
+                int rowF = row;
+                if(flip) {
+//                    colF = SIZE - 1 -col;
+                    rowF = SIZE -1 -row;
+                }
+                if ((rowF + col) % 2 == 0) {
                     g.setColor(YELLOW_WHITE);
                 } else {
                     g.setColor(LIGHT_BROWN);
@@ -137,7 +145,7 @@ public class ChessBoardGUI extends JPanel {
                 g.fillRect(col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
 
                 // Draw the piece if there is one at this position
-                Piece p = board.getChessBoardPiece(CoordinateEnum.getCoordinateEnum(col, SIZE - row - 1));
+                Piece p = board.getChessBoardPiece(CoordinateEnum.getCoordinateEnum(col, SIZE - rowF - 1));
                 if (p != null) {
                     // Load the image for this piece
                     ImageIcon imageIcon = new ImageIcon("PiecesPNG/" + p.getPC() + ".png");
@@ -158,7 +166,7 @@ public class ChessBoardGUI extends JPanel {
                     g.setColor(Color.BLUE);
 //                    System.out.println(temp);
 
-                        if(selectedPiece.isValidMove(CoordinateEnum.getCoordinateEnum(col,SIZE-1-row)))
+                        if(selectedPiece.isValidMove(CoordinateEnum.getCoordinateEnum(col,SIZE-1-rowF)))
                              g.drawRect(col * SQUARE_SIZE+5, row * SQUARE_SIZE+5, SQUARE_SIZE-10, SQUARE_SIZE-10);
 
                 }
