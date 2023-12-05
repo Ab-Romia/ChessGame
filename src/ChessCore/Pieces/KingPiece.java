@@ -1,8 +1,7 @@
 
 package ChessCore.Pieces;
-import ChessCore.ChessBoard;
+import ChessCore.ChessBoard.ChessBoard;
 import ChessCore.Enum.CoordinateEnum;
-import Exceptions.InvalidMove;
 
 import java.util.ArrayList;
 import java.util.List;

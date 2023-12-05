@@ -1,6 +1,6 @@
 package ChessCore.Pieces;
 
-import ChessCore.ChessBoard;
+import ChessCore.ChessBoard.ChessBoard;
 import ChessCore.Enum.CoordinateEnum;
 
 import java.util.ArrayList;

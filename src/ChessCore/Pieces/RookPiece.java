@@ -1,13 +1,12 @@
 
 package ChessCore.Pieces;
-import ChessCore.ChessBoard;
+import ChessCore.ChessBoard.ChessBoard;
 import ChessCore.Enum.CoordinateEnum;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static ChessCore.Utils.Constants.IN_CHECK;
 import static ChessCore.Utils.Constants.ROOK_PIECE_NAME;
 
 public class RookPiece extends Piece {

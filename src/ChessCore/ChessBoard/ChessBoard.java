@@ -1,14 +1,14 @@
 
-package ChessCore;
+package ChessCore.ChessBoard;
+import BoardGUI.Move;
 import ChessCore.Enum.CoordinateEnum;
 import ChessCore.Pieces.*;
+import ChessCore.Undo.UndoMemento;
+import ChessCore.Undo.UndoCaretaker;
 import Exceptions.*;
 
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 
 import static ChessCore.Enum.CoordinateEnum.*;
@@ -20,6 +20,7 @@ public class ChessBoard {
 
     private boolean gameEnded = false;
 
+    private UndoCaretaker caretaker = new UndoCaretaker();
 
     public static List<String> getOutputs() {
         return outputs;
@@ -40,6 +41,12 @@ public class ChessBoard {
         return currentTurnColor;
     }
 
+//    public UndoMemento save(){
+//
+//    }
+//    public void restore(UndoMemento memento){
+//
+//    }
     public static ChessBoard getInstance() {
         if (chessBoardInstance == null) {
             chessBoardInstance = new ChessBoard();
@@ -92,6 +99,11 @@ public class ChessBoard {
         addPieceInCoordinate(piecePos.get(5), new BishopPiece(player, piecePos.get(5)));
         addPieceInCoordinate(piecePos.get(6), new KnightPiece(player, piecePos.get(6)));
         addPieceInCoordinate(piecePos.get(7), new RookPiece(player, piecePos.get(7)));
+        for(int i =  2; i<6; i++){
+            for(int j = 0; j<8; j++){
+                addPieceInCoordinate(getCoordinateEnum(j,i), null);
+            }
+        }
     }
 
     private void createPlayerBoard(String player, Integer col) {
@@ -153,12 +165,14 @@ public class ChessBoard {
     }
 
 
-    public void play(CoordinateEnum srcCoor, CoordinateEnum destCoor, String name) throws Exception {
+    public void play(CoordinateEnum srcCoor, CoordinateEnum destCoor, String name,boolean mode) throws Exception {
         Piece srcPiece = chessBoardInstance.getChessBoardPiece(srcCoor);
         Piece destPiece = chessBoardInstance.getChessBoardPiece(destCoor);
         if (srcCoor == e8&& destCoor == f7){
             System.out.println("");
         }
+//        caretaker.addMemento(save());
+
 
         if (gameEnded) {
 //            System.out.println(GAME_ALREADY_ENDED);
@@ -250,6 +264,9 @@ public class ChessBoard {
                    throw new Stalemate();
                }
                printChessBoard();
+               if(!mode)
+                caretaker.addMemento(new UndoMemento(new Move(srcCoor, destCoor),srcPiece.getPieceColor()));
+
 
             } else {
 //                System.out.println(IN_VALID_MOVE);
@@ -270,7 +287,34 @@ public class ChessBoard {
         }
 
     }
+//    public void undo(){
+//
+//    }
 
+public void undo() throws Exception {
+    if (!caretaker.isEmpty()) {
+        {
+            UndoMemento previousMove = caretaker.getMemento();
+
+        }
+        initializeGame();
+        Stack<UndoMemento> tempStack = new Stack<>();
+        currentTurnColor = Objects.equals(currentTurnColor, WHITE) ? BLACK : WHITE;
+        while (!caretaker.isEmpty()) {
+            UndoMemento memento = caretaker.getMemento();
+            tempStack.push(memento);
+
+        }
+
+        // Push the moves back to the original stack
+        while (!tempStack.isEmpty()) {
+            UndoMemento memento = caretaker.getMemento();
+            Move move = memento.getMove();
+            play(move.getSrc(), move.getDst(), "",true);
+            caretaker.addMemento(tempStack.pop());
+        }
+    }
+}
     private boolean isInsuffient() {
         List<String> condition1 = new ArrayList<>(List.of(KING_PIECE_NAME));
         List<String> condition2 = new ArrayList<>(List.of(KING_PIECE_NAME, BISHOP_PIECE_NAME));

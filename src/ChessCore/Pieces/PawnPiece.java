@@ -1,21 +1,15 @@
 
 package ChessCore.Pieces;
-import ChessCore.ChessBoard;
+import ChessCore.ChessBoard.ChessBoard;
 import ChessCore.Enum.CoordinateEnum;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static ChessCore.Enum.CoordinateEnum.d6;
-import static ChessCore.Enum.CoordinateEnum.f7;
-import static ChessCore.Utils.Constants.BISHOP_PIECE_NAME;
 import static ChessCore.Utils.Constants.BLACK;
 
-import static ChessCore.Utils.Constants.ENPASSANT;
-import static ChessCore.Utils.Constants.IN_VALID_MOVE;
 import static ChessCore.Utils.Constants.PAWN_PIECE_NAME;
-import static ChessCore.Utils.Constants.QUEEN_PIECE_NAME;
 import static ChessCore.Utils.Constants.WHITE;
 
 public class PawnPiece extends Piece {

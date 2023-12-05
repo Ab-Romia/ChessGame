@@ -7,8 +7,8 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Objects;
-
-import ChessCore.ChessBoard;
+import javax.swing.table.DefaultTableModel;
+import ChessCore.ChessBoard.ChessBoard;
 import ChessCore.Enum.*;
 import ChessCore.Pieces.*;
 import Exceptions.*;
@@ -21,12 +21,15 @@ public class ChessBoardGUI extends JPanel {
     private final char[] letters = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
     private final ChessBoard board = ChessBoard.getInstance();
     private Piece selectedPiece = null;
-
+    private CoordinateEnum lastMoveSrc = null;
+    private CoordinateEnum lastMoveDest = null;
     private boolean flip = false;
 //    private boolean turn = true;
     private int selectedRow = -1;
     private int selectedCol = -1;
-
+    private final DefaultTableModel movesTableModel;
+    private final JTable movesTable;
+    private JButton undoButton;
     public ChessBoardGUI() {
         addMouseListener(new MouseAdapter() {
             @Override
@@ -94,17 +97,20 @@ public class ChessBoardGUI extends JPanel {
                                         temp = "K";
                                     else
                                         temp = "Q";
-                                    board.play(CoordinateEnum.getCoordinateEnum(selectedCol, SIZE - 1 - selectedRow), CoordinateEnum.getCoordinateEnum(col, SIZE - 1 - row), temp);
+                                    board.play(CoordinateEnum.getCoordinateEnum(selectedCol, SIZE - 1 - selectedRow), CoordinateEnum.getCoordinateEnum(col, SIZE - 1 - row), temp,false);
 
                                 } else {
-                                    board.play(CoordinateEnum.getCoordinateEnum(selectedCol, SIZE - 1 - selectedRow), CoordinateEnum.getCoordinateEnum(col, SIZE - 1 - row), "");
+                                    board.play(CoordinateEnum.getCoordinateEnum(selectedCol, SIZE - 1 - selectedRow), CoordinateEnum.getCoordinateEnum(col, SIZE - 1 - row), "",false);
                                 }
+                                updateMovesTable(src, dest);
+                                lastMoveSrc = src;
+                                lastMoveDest = dest;
                                 flip = !flip;
                             }
                             catch (Won | Insufficient | Stalemate w) {
 
                                 JOptionPane.showMessageDialog(null, w.getMessage());
-
+                                updateMovesTable(src, dest,w.getMessage());
                             } catch (NullPointerException | InvalidMove ex) {
                                 System.out.println(ex.getMessage());
                             }
@@ -126,6 +132,33 @@ public class ChessBoardGUI extends JPanel {
 
             }
         });
+        movesTableModel = new DefaultTableModel();
+        movesTableModel.addColumn("Source");
+        movesTableModel.addColumn("Destination");
+        movesTable = new JTable(movesTableModel);
+            Font font = new Font("Romia", Font.PLAIN, 18);
+            movesTable.setFont(font);
+            movesTable.setRowHeight(25);
+            movesTable.getTableHeader().setFont(font);
+        JScrollPane scrollPane = new JScrollPane(movesTable);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+                undoButton = new JButton("Undo");
+        undoButton.addActionListener(e -> {
+            // Call the undo method when the button is clicked
+            try {
+                board.undo();
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+            repaint();
+        });
+
+    }
+    private void updateMovesTable(CoordinateEnum src, CoordinateEnum dest) {
+        movesTableModel.addRow(new Object[]{src.toString(), dest.toString()});
+    }
+    private void updateMovesTable(CoordinateEnum src, CoordinateEnum dest, String mode) {
+        movesTableModel.addRow(new Object[]{src.toString(), dest.toString()+" "+mode});
     }
     @Override
     protected void paintComponent(Graphics g) {
@@ -137,6 +170,8 @@ public class ChessBoardGUI extends JPanel {
 //                    colF = SIZE - 1 -col;
                     rowF = SIZE -1 -row;
                 }
+                CoordinateEnum currentSquare = CoordinateEnum.getCoordinateEnum(col, SIZE - rowF - 1);
+
                 if ((rowF + col) % 2 == 0) {
                     g.setColor(YELLOW_WHITE);
                 } else {
@@ -144,32 +179,41 @@ public class ChessBoardGUI extends JPanel {
                 }
                 g.fillRect(col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
 
+                if (currentSquare.equals(lastMoveSrc) || currentSquare.equals(lastMoveDest))
+                {
+                    g.setColor(Color.LIGHT_GRAY);
+                    g.fillRect(col * SQUARE_SIZE+5, row * SQUARE_SIZE+5, SQUARE_SIZE-10, SQUARE_SIZE-10);
+                }
+
+
                 // Draw the piece if there is one at this position
                 Piece p = board.getChessBoardPiece(CoordinateEnum.getCoordinateEnum(col, SIZE - rowF - 1));
+                if (selectedPiece != null) {
+
+                    g.setColor(Color.DARK_GRAY);
+//                    System.out.println(temp);
+                    if(rowF==selectedRow && col==selectedCol)
+                        g.fillRect(col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
+                    g.setColor(Color.GREEN);
+                    if(selectedPiece.isValidMove(CoordinateEnum.getCoordinateEnum(col,SIZE-1-rowF)))
+                        g.fillRect(col * SQUARE_SIZE+5, row * SQUARE_SIZE+5, SQUARE_SIZE-10, SQUARE_SIZE-10);
+
+                }
                 if (p != null) {
                     // Load the image for this piece
                     ImageIcon imageIcon = new ImageIcon("PiecesPNG/" + p.getPC() + ".png");
                     Image image = imageIcon.getImage();
+                    if (p.getPieceName().equals("King") && KingPiece.isKingAtRisk(p.getPieceColor())) {
+                        g.setColor(Color.RED);
+                        g.fillRect(col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);}
+
                     // Draw the image
                     g.drawImage(image, col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE, this);
-                    if (p.getPieceName().equals("King") && KingPiece.isKingAtRisk(p.getPieceColor())) {
-                    g.setColor(Color.RED);
-                    g.drawRect(col * SQUARE_SIZE+5, row * SQUARE_SIZE+5, SQUARE_SIZE-10, SQUARE_SIZE-10);}
-                }
-
-
-                // If this square is the selected square, draw a border around it
-                // If this square is the selected square, draw a border around it
-                // If this square is the selected square, draw a border around it
-                if (selectedPiece != null) {
-
-                    g.setColor(Color.BLUE);
-//                    System.out.println(temp);
-
-                        if(selectedPiece.isValidMove(CoordinateEnum.getCoordinateEnum(col,SIZE-1-rowF)))
-                             g.drawRect(col * SQUARE_SIZE+5, row * SQUARE_SIZE+5, SQUARE_SIZE-10, SQUARE_SIZE-10);
 
                 }
+
+
+
 
                 // Add text to the square
                 if (row == 7) {
@@ -194,7 +238,15 @@ public class ChessBoardGUI extends JPanel {
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Chess Board");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.add(new ChessBoardGUI());
+
+            ChessBoardGUI chessBoardGUI = new ChessBoardGUI();
+            frame.add(chessBoardGUI, BorderLayout.CENTER);
+
+            JScrollPane scrollPane = new JScrollPane(chessBoardGUI.movesTable);
+            scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+            frame.add(scrollPane, BorderLayout.EAST);
+            frame.add(chessBoardGUI.undoButton, BorderLayout.SOUTH);
+
             frame.pack();
             frame.setVisible(true);
         });

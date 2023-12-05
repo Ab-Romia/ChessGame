@@ -3,7 +3,7 @@
 
 package ChessCore.Pieces;
 import ChessCore.Enum.CoordinateEnum;
-import ChessCore.ChessBoard;
+import ChessCore.ChessBoard.ChessBoard;
 
 import java.util.ArrayList;
 import java.util.List;
