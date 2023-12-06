@@ -115,7 +115,7 @@ public class ChessBoardGUI extends JPanel {
                                 updateMovesTable(src, dest);
                                 lastMoveSrc = src;
                                 lastMoveDest = dest;
-                                flip = !flip;
+//                                flip = !flip;
                             }
                             catch (Won | Insufficient | Stalemate w) {
                                 end = true;

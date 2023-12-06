@@ -366,6 +366,25 @@ public void undo() throws Exception {
         if (whitePiece.equals(condition3) && blackPiece.equals(condition3)) {
             return true;
         }
+        if (whitePiece.equals(condition1) && blackPiece.equals(condition2)) {
+            return true;
+        }
+        if (whitePiece.equals(condition2) && blackPiece.equals(condition1)) {
+            return true;
+        }
+        if (whitePiece.equals(condition1) && blackPiece.equals(condition3)) {
+            return true;
+        }
+        if (whitePiece.equals(condition3) && blackPiece.equals(condition1)) {
+            return true;
+        }
+        if (whitePiece.equals(condition2) && blackPiece.equals(condition3)) {
+            return true;
+        }
+        if (whitePiece.equals(condition3) && blackPiece.equals(condition2)) {
+            return true;
+        }
+
         return false;
     }
 }

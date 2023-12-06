@@ -11,6 +11,7 @@ import static ChessCore.Utils.Constants.BLACK;
 
 import static ChessCore.Utils.Constants.PAWN_PIECE_NAME;
 import static ChessCore.Utils.Constants.WHITE;
+import static java.lang.Math.abs;
 
 public class PawnPiece extends Piece {
 
@@ -66,6 +67,7 @@ public class PawnPiece extends Piece {
         }
         if ((this.getPieceColor().equals(WHITE) && yCorr == 7)
                 || this.getPieceColor().equals(BLACK) && yCorr == 0) {
+
             switch (this.getPromoteTo()) {
                 case "K" : {
                     chessBoardInstance.setPieceInCoordinate(this.getCurrentCoordinate(), new KnightPiece(this.getPieceColor(), this.getCurrentCoordinate()));
@@ -321,7 +323,7 @@ public class PawnPiece extends Piece {
             if (pawnPiece.initSquareMovement != 2) {
                 return false;
             }
-            if ((yCoor == 4 && pawnPiece.getPieceColor().equals(BLACK) || yCoor == 3 &&pawnPiece.getPieceColor().equals(WHITE)) && (destCoorX == xCoor + sign && destCoorY == (yCoor + pieceColorSign))) {
+            if ((yCoor == 4 && pawnPiece.getPieceColor().equals(BLACK) || yCoor == 3 &&pawnPiece.getPieceColor().equals(WHITE)) && (abs(destCoorX-xCoor)==1 && destCoorY == (yCoor + pieceColorSign))) {
                 Piece piece = chessBoard.getChessBoardPiece(xCoor + sign, yCoor);
                 return (piece != null)
                         && (!piece.getPieceColor().equals(this.getPieceColor()))
