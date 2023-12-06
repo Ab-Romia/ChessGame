@@ -31,8 +31,15 @@ public class ChessBoardGUI extends JPanel {
     private final JTable movesTable;
     private JButton undoButton;
     private String msg;
+    private JButton flipButton;
+
     private boolean end = false;
     public ChessBoardGUI() {
+        flipButton = new JButton("Flip Board");
+        flipButton.addActionListener(e -> {
+            flip = !flip;
+            repaint();
+        });
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -251,9 +258,12 @@ public class ChessBoardGUI extends JPanel {
 
             ChessBoardGUI chessBoardGUI = new ChessBoardGUI();
             frame.add(chessBoardGUI, BorderLayout.CENTER);
-
+            JPanel buttonPanel = new JPanel();
+            buttonPanel.add(chessBoardGUI.undoButton);
+            buttonPanel.add(chessBoardGUI.flipButton);
             JScrollPane scrollPane = new JScrollPane(chessBoardGUI.movesTable);
             scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+            frame.add(buttonPanel, BorderLayout.NORTH);
             frame.add(scrollPane, BorderLayout.EAST);
             frame.add(chessBoardGUI.undoButton, BorderLayout.SOUTH);
 
