@@ -124,7 +124,14 @@ public class ChessBoard {
             System.out.println();
         }
     }
-
+    public boolean isCapture(CoordinateEnum srcCoor, CoordinateEnum destCoor) {
+        Piece srcPiece = chessBoardInstance.getChessBoardPiece(srcCoor);
+        Piece destPiece = chessBoardInstance.getChessBoardPiece(destCoor);
+        if (currentTurnColor.equals(srcPiece.getPieceColor())&&getChessBoardPiece(srcCoor).isValidMove(destCoor))
+            if (destPiece != null)
+                return !Objects.equals(destPiece.getPieceColor(), srcPiece.getPieceColor());
+        return false;
+    }
     public void doCaptured(CoordinateEnum destCoor, Piece srcPiece) {
         Piece destPiece = chessBoardInstance.getChessBoardPiece(destCoor);
         if (destPiece != null) {

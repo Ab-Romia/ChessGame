@@ -84,8 +84,9 @@ public class QueenPiece extends Piece {
 
             }
 
-            if(!isInCheck(this.getCurrentCoordinate(),destinationCoordinate))
-                return true;
+            if(isInCheck(this.getCurrentCoordinate(),destinationCoordinate))
+                return false;
+            return true;
         }
         return false;
     }

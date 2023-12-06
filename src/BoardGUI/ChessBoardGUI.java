@@ -195,8 +195,13 @@ public class ChessBoardGUI extends JPanel {
                     if(rowF==selectedRow && col==selectedCol)
                         g.fillRect(col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
                     g.setColor(Color.GREEN);
-                    if(selectedPiece.isValidMove(CoordinateEnum.getCoordinateEnum(col,SIZE-1-rowF)))
-                        g.fillRect(col * SQUARE_SIZE+5, row * SQUARE_SIZE+5, SQUARE_SIZE-10, SQUARE_SIZE-10);
+                    if(selectedPiece.isValidMove(CoordinateEnum.getCoordinateEnum(col,SIZE-1-rowF))) {
+                        g.fillRect(col * SQUARE_SIZE + 5, row * SQUARE_SIZE + 5, SQUARE_SIZE - 10, SQUARE_SIZE - 10);
+                        if(board.isCapture(selectedPiece.getCurrentCoordinate(),CoordinateEnum.getCoordinateEnum(col,SIZE-1-rowF))) {
+                            g.setColor(new Color(255, 0, 0, 100));
+                            g.fillRect(col * SQUARE_SIZE + 10, row * SQUARE_SIZE + 10, SQUARE_SIZE - 20, SQUARE_SIZE - 20);
+                        }
+                    }
 
                 }
                 if (p != null) {

@@ -57,7 +57,9 @@ public class RookPiece extends Piece {
                 if(isThereObstacle(destinationCoordinate)) {
                     return false;
                 }
-                return !Objects.equals(piece.getPieceColor(), this.getPieceColor());
+            if (Objects.equals(piece.getPieceColor(), this.getPieceColor())) {
+                return false;
+            }
             }
             if (isThereObstacle(destinationCoordinate)) {
                 return false;
