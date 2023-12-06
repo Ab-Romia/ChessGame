@@ -120,9 +120,11 @@ public class ChessBoardGUI extends JPanel {
                             catch (Won | Insufficient | Stalemate w) {
                                 end = true;
                                 repaint();
+                                updateMovesTable(src, dest);
+                                updateMovesTable(w.getMessage());
                                 JOptionPane.showMessageDialog(null, w.getMessage());
 
-                                updateMovesTable(src, dest,w.getMessage());
+
                             } catch (NullPointerException | InvalidMove ex) {
                                 System.out.println(ex.getMessage());
                             }
@@ -165,7 +167,7 @@ public class ChessBoardGUI extends JPanel {
         JScrollPane scrollPane = new JScrollPane(movesTable);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
                 undoButton = new JButton("Undo");
-        resetButton = new JButton("Reset Board");
+        resetButton = new JButton("Reset Game");
         resetButton.addActionListener(e -> {
             board.resetBoard();
             reset = true;
@@ -192,8 +194,8 @@ public class ChessBoardGUI extends JPanel {
     private void updateMovesTable(CoordinateEnum src, CoordinateEnum dest) {
         movesTableModel.addRow(new Object[]{src.toString(), dest.toString()});
     }
-    private void updateMovesTable(CoordinateEnum src, CoordinateEnum dest, String mode) {
-        movesTableModel.addRow(new Object[]{src.toString(), dest.toString()+" "+mode});
+    private void updateMovesTable(String msg) {
+        movesTableModel.addRow(new Object[]{msg, "Game Ended"});
     }
     @Override
     protected void paintComponent(Graphics g) {
