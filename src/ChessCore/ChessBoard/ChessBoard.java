@@ -62,7 +62,12 @@ public class ChessBoard {
     public Piece getChessBoardPiece(int xCoor, int yCoor) {
         return chessBoard[xCoor][yCoor];
     }
+    public void resetBoard()
+    {
+        initializeGame();
+        currentTurnColor = WHITE;
 
+    }
 
     public void setChessBoardPiece(CoordinateEnum srcCoor, CoordinateEnum destCoor) {
 

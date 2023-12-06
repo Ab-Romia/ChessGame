@@ -32,7 +32,8 @@ public class ChessBoardGUI extends JPanel {
     private JButton undoButton;
     private String msg;
     private JButton flipButton;
-
+    private JButton resetButton;
+    private boolean reset = false;
     private boolean end = false;
     public ChessBoardGUI() {
         flipButton = new JButton("Flip Board");
@@ -40,19 +41,19 @@ public class ChessBoardGUI extends JPanel {
             flip = !flip;
             repaint();
         });
+
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                reset = false;
                 int col = e.getX() / SQUARE_SIZE;
                 int row = e.getY() / SQUARE_SIZE;
                 if(flip)
-                {
-//                    col = SIZE - 1 - col;
                     row = SIZE - 1 - row;
-                }
 
 
-                    if (selectedPiece == null) {
+
+                if (selectedPiece == null) {
 
                         System.out.println("Selected: " + CoordinateEnum.getCoordinateEnum(col, SIZE - row - 1));
                         selectedPiece = board.getChessBoardPiece(CoordinateEnum.getCoordinateEnum(col, SIZE - row - 1));
@@ -94,7 +95,6 @@ public class ChessBoardGUI extends JPanel {
                                     String[] options = {"Queen", "Rook", "Bishop", "Knight"};
                                     String temp;
                                     int x = JOptionPane.showOptionDialog(null, "Choose a piece to promote the pawn to:", "Pawn Promotion", JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
-//                                int x = JOptionPane.showOptionDialog(null, "Choose a piece to promote to", "Promotion", JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, options, options[0]);
                                     if (x == 0)
                                         temp = "Q";
 
@@ -128,7 +128,8 @@ public class ChessBoardGUI extends JPanel {
 
                          catch (GamedEnded ge) {
                             JOptionPane.showMessageDialog(null, ge.getMessage());
-                            System.exit(0);}
+
+                            }
                             catch (Exception ex) {
                                 JOptionPane.showMessageDialog(null, ex.getMessage());
                                 throw new RuntimeException(ex);
@@ -155,15 +156,27 @@ public class ChessBoardGUI extends JPanel {
         JScrollPane scrollPane = new JScrollPane(movesTable);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
                 undoButton = new JButton("Undo");
+        resetButton = new JButton("Reset Board");
+        resetButton.addActionListener(e -> {
+            board.resetBoard();
+            reset = true;
+            movesTableModel.setRowCount(0);
+            flip = false;
+            lastMoveSrc= null;
+            lastMoveDest = null;
+            repaint();
+        });
         undoButton.addActionListener(e -> {
             // Call the undo method when the button is clicked
             try {
                 board.undo();
+                movesTableModel.removeRow(movesTableModel.getRowCount()-1);
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
             repaint();
         });
+
 
     }
     private void updateMovesTable(CoordinateEnum src, CoordinateEnum dest) {
@@ -191,7 +204,7 @@ public class ChessBoardGUI extends JPanel {
                 }
                 g.fillRect(col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
 
-                if (currentSquare.equals(lastMoveSrc) || currentSquare.equals(lastMoveDest))
+                if ((currentSquare.equals(lastMoveSrc) || currentSquare.equals(lastMoveDest))&&!reset)
                 {
                     g.setColor(Color.LIGHT_GRAY);
                     g.fillRect(col * SQUARE_SIZE+5, row * SQUARE_SIZE+5, SQUARE_SIZE-10, SQUARE_SIZE-10);
@@ -200,12 +213,12 @@ public class ChessBoardGUI extends JPanel {
 
                 // Draw the piece if there is one at this position
                 Piece p = board.getChessBoardPiece(CoordinateEnum.getCoordinateEnum(col, SIZE - rowF - 1));
-                if (selectedPiece != null&&!end) {
+                if (selectedPiece != null&&!end&&!reset) {
 
                     g.setColor(Color.DARK_GRAY);
 //                    System.out.println(temp);
                     if(rowF==selectedRow && col==selectedCol)
-                        g.fillRect(col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);
+                        g.fillRect(col * SQUARE_SIZE+5, row * SQUARE_SIZE+5, SQUARE_SIZE-10, SQUARE_SIZE-10);
                     g.setColor(Color.GREEN);
                     if(selectedPiece.isValidMove(CoordinateEnum.getCoordinateEnum(col,SIZE-1-rowF))) {
                         g.fillRect(col * SQUARE_SIZE + 5, row * SQUARE_SIZE + 5, SQUARE_SIZE - 10, SQUARE_SIZE - 10);
@@ -220,7 +233,7 @@ public class ChessBoardGUI extends JPanel {
                     // Load the image for this piece
                     ImageIcon imageIcon = new ImageIcon("PiecesPNG/" + p.getPC() + ".png");
                     Image image = imageIcon.getImage();
-                    if (p.getPieceName().equals("King") && KingPiece.isKingAtRisk(p.getPieceColor())) {
+                    if (p.getPieceName().equals("King") && KingPiece.isKingAtRisk(p.getPieceColor())&&!reset) {
                         g.setColor(Color.RED);
                         g.fillRect(col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE);}
 
@@ -261,12 +274,11 @@ public class ChessBoardGUI extends JPanel {
             JPanel buttonPanel = new JPanel();
             buttonPanel.add(chessBoardGUI.undoButton);
             buttonPanel.add(chessBoardGUI.flipButton);
+            buttonPanel.add(chessBoardGUI.resetButton);
             JScrollPane scrollPane = new JScrollPane(chessBoardGUI.movesTable);
             scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
             frame.add(buttonPanel, BorderLayout.NORTH);
             frame.add(scrollPane, BorderLayout.EAST);
-            frame.add(chessBoardGUI.undoButton, BorderLayout.SOUTH);
-
             frame.pack();
             frame.setVisible(true);
         });
