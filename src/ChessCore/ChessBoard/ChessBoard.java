@@ -66,6 +66,7 @@ public class ChessBoard {
     {
         initializeGame();
         currentTurnColor = WHITE;
+        gameEnded = false;
 
     }
 

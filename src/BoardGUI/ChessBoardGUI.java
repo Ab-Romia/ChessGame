@@ -45,6 +45,7 @@ public class ChessBoardGUI extends JPanel {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+
                 reset = false;
                 int col = e.getX() / SQUARE_SIZE;
                 int row = e.getY() / SQUARE_SIZE;
@@ -67,7 +68,7 @@ public class ChessBoardGUI extends JPanel {
 
                         }
                         try {
-                            if (!Objects.equals(board.getCurrentTurnColor(), selectedPiece.getPieceColor())) {
+                            if (!Objects.equals(board.getCurrentTurnColor(), selectedPiece.getPieceColor())&&!end) {
                                 JOptionPane.showMessageDialog(null, board.getCurrentTurnColor() + "'s turn");
                                 selectedPiece = null;
                                 selectedRow = -1;
@@ -128,6 +129,14 @@ public class ChessBoardGUI extends JPanel {
 
                          catch (GamedEnded ge) {
                             JOptionPane.showMessageDialog(null, ge.getMessage());
+                            reset = true;
+                            board.resetBoard();
+                            movesTableModel.setRowCount(0);
+                            flip = false;
+                            lastMoveSrc= null;
+                            lastMoveDest = null;
+                            end = false;
+                            repaint();
 
                             }
                             catch (Exception ex) {
@@ -160,6 +169,7 @@ public class ChessBoardGUI extends JPanel {
         resetButton.addActionListener(e -> {
             board.resetBoard();
             reset = true;
+            end = false;
             movesTableModel.setRowCount(0);
             flip = false;
             lastMoveSrc= null;
