@@ -17,7 +17,6 @@ import static ChessCore.Utils.Constants.*;
 public class ChessBoard {
 
     private static List<String> outputs = new ArrayList<>();
-
     private boolean gameEnded = false;
 
     private UndoCaretaker caretaker = new UndoCaretaker();

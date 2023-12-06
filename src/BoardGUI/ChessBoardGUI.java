@@ -30,6 +30,8 @@ public class ChessBoardGUI extends JPanel {
     private final DefaultTableModel movesTableModel;
     private final JTable movesTable;
     private JButton undoButton;
+    private String msg;
+    private boolean end = false;
     public ChessBoardGUI() {
         addMouseListener(new MouseAdapter() {
             @Override
@@ -108,8 +110,10 @@ public class ChessBoardGUI extends JPanel {
                                 flip = !flip;
                             }
                             catch (Won | Insufficient | Stalemate w) {
-
+                                end = true;
+                                repaint();
                                 JOptionPane.showMessageDialog(null, w.getMessage());
+
                                 updateMovesTable(src, dest,w.getMessage());
                             } catch (NullPointerException | InvalidMove ex) {
                                 System.out.println(ex.getMessage());
@@ -126,7 +130,8 @@ public class ChessBoardGUI extends JPanel {
                             selectedRow = -1;
                             selectedCol = -1;
                             // Update the board
-                            repaint();
+                            if(!end)
+                             repaint();
                         }
                     }
 
@@ -188,7 +193,7 @@ public class ChessBoardGUI extends JPanel {
 
                 // Draw the piece if there is one at this position
                 Piece p = board.getChessBoardPiece(CoordinateEnum.getCoordinateEnum(col, SIZE - rowF - 1));
-                if (selectedPiece != null) {
+                if (selectedPiece != null&&!end) {
 
                     g.setColor(Color.DARK_GRAY);
 //                    System.out.println(temp);
