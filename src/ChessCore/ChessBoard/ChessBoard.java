@@ -131,6 +131,8 @@ public class ChessBoard {
     public boolean isCapture(CoordinateEnum srcCoor, CoordinateEnum destCoor) {
         Piece srcPiece = chessBoardInstance.getChessBoardPiece(srcCoor);
         Piece destPiece = chessBoardInstance.getChessBoardPiece(destCoor);
+        if (srcPiece instanceof PawnPiece&& ((PawnPiece) srcPiece).isEnPessant(destCoor))
+            return true;
         if (currentTurnColor.equals(srcPiece.getPieceColor())&&getChessBoardPiece(srcCoor).isValidMove(destCoor))
             if (destPiece != null)
                 return !Objects.equals(destPiece.getPieceColor(), srcPiece.getPieceColor());
