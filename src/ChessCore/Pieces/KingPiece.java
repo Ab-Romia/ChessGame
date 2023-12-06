@@ -3,6 +3,7 @@ package ChessCore.Pieces;
 import ChessCore.ChessBoard.ChessBoard;
 import ChessCore.Enum.CoordinateEnum;
 
+import java.lang.instrument.IllegalClassFormatException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -13,6 +14,8 @@ import static ChessCore.Utils.Constants.*;
 public class KingPiece extends Piece {
 
     private final String pieceName = KING_PIECE_NAME;
+    private boolean rCasle = true;
+    private boolean lCasle = false;
     private final String PC =  this.getPieceColor()+ pieceName;
     public KingPiece(String name, CoordinateEnum coordinate) {
         super(name, coordinate);
@@ -82,6 +85,8 @@ public class KingPiece extends Piece {
     }
 
     public boolean isRightCastling(CoordinateEnum destCoor) {
+        if(!rCasle)
+            return false;
         ChessBoard chessBoard = ChessBoard.getInstance();
         int kingXCoor = this.getCurrentCoordinate().getXCoordinate();
         int kingYCoor = this.getCurrentCoordinate().getYCoordinate();
@@ -105,6 +110,8 @@ public class KingPiece extends Piece {
 
         CoordinateEnum bishopCoor = CoordinateEnum.getCoordinateEnum(kingXCoor + 1, kingYCoor);
         CoordinateEnum horseCoor = CoordinateEnum.getCoordinateEnum(kingXCoor + 2, kingYCoor);
+        if(Objects.requireNonNull(getKingPieceByColor(getPieceColor())).getCurrentCoordinate()!=kingCoor)
+            return false;
         Piece bishoopPiece = chessBoard.getChessBoardPiece(bishopCoor);
         Piece horsePiece = chessBoard.getChessBoardPiece(horseCoor);
 
@@ -116,6 +123,8 @@ public class KingPiece extends Piece {
     }
 
     public boolean isLeftCastling(CoordinateEnum destCoor) {
+        if(!lCasle)
+            return false;
         ChessBoard chessBoard = ChessBoard.getInstance();
         int kingXCoor = this.getCurrentCoordinate().getXCoordinate();
         int kingYCoor = this.getCurrentCoordinate().getYCoordinate();
@@ -131,6 +140,8 @@ public class KingPiece extends Piece {
             if (destCoor != c8)
                 return false;
         }
+        if(Objects.requireNonNull(getKingPieceByColor(getPieceColor())).getCurrentCoordinate()!=kingCoor)
+            return false;
         if(chessBoard.getChessBoardPiece(kingCoor)==null||chessBoard.getChessBoardPiece(rookCoor)==null)
             return false;
 
@@ -174,6 +185,15 @@ public class KingPiece extends Piece {
     public Boolean isValidMove(CoordinateEnum destCoor) {
         ChessBoard chessBoardInstance = ChessBoard.getInstance();
         List<CoordinateEnum> possibleMoves = this.getPossibleMoves();
+
+        if (Objects.equals(getPieceColor(), WHITE))
+        {
+            FalseCastle(chessBoardInstance, e1, h1, a1);
+
+        }
+        else {
+            FalseCastle(chessBoardInstance, e8, h8, a8);
+        }
         if (isRightCastling(destCoor)) {
 //            System.out.println(CASTLE);
             return isRightCastling(destCoor)&&isKingSafe(destCoor.getXCoordinate(), destCoor.getYCoordinate());
@@ -190,6 +210,26 @@ public class KingPiece extends Piece {
             }
             return false;
         }
+    }
+
+    private void FalseCastle(ChessBoard chessBoardInstance, CoordinateEnum coordinateEnum, CoordinateEnum coordinateEnum2, CoordinateEnum coordinateEnum3) {
+        if(Objects.requireNonNull(getKingPieceByColor(getPieceColor())).getCurrentCoordinate() != coordinateEnum)
+        {
+            rCasle =false;
+            lCasle = false;
+        }
+        if(chessBoardInstance.getChessBoardPiece(coordinateEnum2) instanceof RookPiece) {
+            RookPiece rookPiece = (RookPiece) chessBoardInstance.getChessBoardPiece(coordinateEnum2);
+            if(rookPiece.getDidRookMove())
+                rCasle = false;
+        }
+        else rCasle=false;
+        if(chessBoardInstance.getChessBoardPiece(coordinateEnum3) instanceof RookPiece) {
+            RookPiece rookPiece = (RookPiece) chessBoardInstance.getChessBoardPiece(coordinateEnum3);
+            if(rookPiece.getDidRookMove())
+                lCasle = false;
+        }
+        else lCasle=false;
     }
 
     @Override

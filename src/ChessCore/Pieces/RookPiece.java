@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static ChessCore.Enum.CoordinateEnum.*;
 import static ChessCore.Utils.Constants.ROOK_PIECE_NAME;
 
 public class RookPiece extends Piece {
@@ -43,14 +44,19 @@ public class RookPiece extends Piece {
         return possibleMoves;
 
     }
+    private void FalseCastle(CoordinateEnum coordinateEnum) {
 
+        if(coordinateEnum != a1&& coordinateEnum!=a8&& coordinateEnum!=h1&& coordinateEnum!=h8) {
+            didRookMove = true;
+        }
+    }
     @Override
     public Boolean isValidMove(CoordinateEnum destinationCoordinate) {
         ChessBoard chessBoardInstance = ChessBoard.getInstance();
         Piece srcPiece = chessBoardInstance.getChessBoardPiece(this.getCurrentCoordinate());
         Piece dstPiece = chessBoardInstance.getChessBoardPiece(destinationCoordinate);
         List<CoordinateEnum> possibleMoves = this.getPossibleMoves();
-
+        FalseCastle(this.getCurrentCoordinate());
         if (possibleMoves.contains(destinationCoordinate)) {
             Piece piece = chessBoardInstance.getChessBoardPiece(destinationCoordinate);
             if (piece != null) {

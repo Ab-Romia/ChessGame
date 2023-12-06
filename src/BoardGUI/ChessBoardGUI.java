@@ -29,10 +29,10 @@ public class ChessBoardGUI extends JPanel {
     private int selectedCol = -1;
     private final DefaultTableModel movesTableModel;
     private final JTable movesTable;
-    private JButton undoButton;
-    private String msg;
-    private JButton flipButton;
-    private JButton resetButton;
+    private final JButton undoButton;
+//    private String msg;
+    private final JButton flipButton;
+    private final JButton resetButton;
     private boolean reset = false;
     private boolean end = false;
     public ChessBoardGUI() {
@@ -115,7 +115,7 @@ public class ChessBoardGUI extends JPanel {
                                 updateMovesTable(src, dest);
                                 lastMoveSrc = src;
                                 lastMoveDest = dest;
-                                flip = !flip;
+//                                flip = !flip;
                             }
                             catch (Won | Insufficient | Stalemate w) {
                                 end = true;
