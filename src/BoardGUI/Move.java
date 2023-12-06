@@ -15,5 +15,4 @@ public class Move {
     public CoordinateEnum getDst() {
         return dst;
     }
-
 }

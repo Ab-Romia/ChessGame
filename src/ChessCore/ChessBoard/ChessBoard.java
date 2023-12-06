@@ -291,30 +291,52 @@ public class ChessBoard {
 //
 //    }
 
-public void undo() throws Exception {
-    if (!caretaker.isEmpty()) {
-        {
+//public void undo() throws Exception {
+//    if (!caretaker.isEmpty()) {
+//        {
+//            UndoMemento previousMove = caretaker.getMemento();
+//
+//        }
+//        initializeGame();
+//        Stack<UndoMemento> tempStack = new Stack<>();
+//        currentTurnColor = Objects.equals(currentTurnColor, WHITE) ? BLACK : WHITE;
+//        while (!caretaker.isEmpty()) {
+//            UndoMemento memento = caretaker.getMemento();
+//            tempStack.push(memento);
+//
+//        }
+//
+//        // Push the moves back to the original stack
+//        while (!tempStack.isEmpty()) {
+//            UndoMemento memento = caretaker.getMemento();
+//            Move move = memento.getMove();
+//            play(move.getSrc(), move.getDst(), "",true);
+//            caretaker.addMemento(tempStack.pop());
+//        }
+//    }
+//}
+
+    public void undo() throws Exception {
+        if (!caretaker.isEmpty()) {
+            // Retrieve the previous move from caretaker and initialize the game
             UndoMemento previousMove = caretaker.getMemento();
+            initializeGame();
 
-        }
-        initializeGame();
-        Stack<UndoMemento> tempStack = new Stack<>();
-        currentTurnColor = Objects.equals(currentTurnColor, WHITE) ? BLACK : WHITE;
-        while (!caretaker.isEmpty()) {
-            UndoMemento memento = caretaker.getMemento();
-            tempStack.push(memento);
+            // Undo moves one by one until reaching the first move
+            while (!caretaker.isEmpty()) {
+                UndoMemento memento = caretaker.getMemento();
+                Move move = memento.getMove();
+                play(move.getSrc(), move.getDst(), "", true);
+                if (caretaker.isEmpty()) {
+                    break;
+                }
+            }
 
-        }
-
-        // Push the moves back to the original stack
-        while (!tempStack.isEmpty()) {
-            UndoMemento memento = caretaker.getMemento();
-            Move move = memento.getMove();
-            play(move.getSrc(), move.getDst(), "",true);
-            caretaker.addMemento(tempStack.pop());
+            // Update the current turn color
+            currentTurnColor = previousMove.getTurn();
         }
     }
-}
+
     private boolean isInsuffient() {
         List<String> condition1 = new ArrayList<>(List.of(KING_PIECE_NAME));
         List<String> condition2 = new ArrayList<>(List.of(KING_PIECE_NAME, BISHOP_PIECE_NAME));
