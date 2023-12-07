@@ -188,6 +188,9 @@ public class ChessBoardGUI extends JPanel {
                 selectedPiece = null;
                 selectedRow = -1;
                 selectedCol = -1;
+                lastMoveSrc = null;
+                lastMoveDest = null;
+
                 flip=!flip;
                 if(movesTableModel.getRowCount()>0)
                     movesTableModel.removeRow(movesTableModel.getRowCount()-1);
