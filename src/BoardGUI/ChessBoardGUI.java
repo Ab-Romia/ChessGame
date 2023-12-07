@@ -112,10 +112,10 @@ public class ChessBoardGUI extends JPanel {
                                     else
                                         temp = "Q";
                                     board.play(CoordinateEnum.getCoordinateEnum(selectedCol, SIZE - 1 - selectedRow), CoordinateEnum.getCoordinateEnum(col, SIZE - 1 - row), temp,false);
-
+                                    java.awt.Toolkit.getDefaultToolkit().beep();
                                 } else {
                                     board.play(CoordinateEnum.getCoordinateEnum(selectedCol, SIZE - 1 - selectedRow), CoordinateEnum.getCoordinateEnum(col, SIZE - 1 - row), "",false);
-                                }
+                                }java.awt.Toolkit.getDefaultToolkit().beep();
                                 updateMovesTable(src, dest);
                                 lastMoveSrc = src;
                                 lastMoveDest = dest;
@@ -127,6 +127,8 @@ public class ChessBoardGUI extends JPanel {
                                 repaint();
                                 updateMovesTable(src, dest);
                                 updateMovesTable(w.getMessage());
+                                java.awt.Toolkit.getDefaultToolkit().beep();
+
                                 JOptionPane.showMessageDialog(null, w.getMessage());
 
 
@@ -135,6 +137,7 @@ public class ChessBoardGUI extends JPanel {
                             }
 
                          catch (GamedEnded ge) {
+                             java.awt.Toolkit.getDefaultToolkit().beep();
                             JOptionPane.showMessageDialog(null, ge.getMessage());
                             reset = true;
                             board.resetBoard();
