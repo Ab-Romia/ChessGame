@@ -21,10 +21,11 @@ public class ChessBoardGUI extends JPanel {
     private static final Color YELLOW_WHITE = new Color(255, 255, 200);
     private final char[] letters = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
     private final ChessBoard board = ChessBoard.getInstance();
-    private Player player = new Player(board);
+    private final Player player = new Player(board);
     private Piece selectedPiece = null;
     private CoordinateEnum lastMoveSrc = null;
     private CoordinateEnum lastMoveDest = null;
+    private final JButton disableFlipButton;
     private boolean flip = false;
 //    private boolean turn = true;
     private int selectedRow = -1;
@@ -35,6 +36,7 @@ public class ChessBoardGUI extends JPanel {
 //    private String msg;
     private final JButton flipButton;
     private final JButton resetButton;
+    private boolean disableFlip = false;
     private boolean reset = false;
     private boolean end = false;
     public ChessBoardGUI() {
@@ -117,7 +119,8 @@ public class ChessBoardGUI extends JPanel {
                                 updateMovesTable(src, dest);
                                 lastMoveSrc = src;
                                 lastMoveDest = dest;
-                                flip = !flip;
+                                if(!disableFlip)
+                                    flip = !flip;
                             }
                             catch (Won | Insufficient | Stalemate w) {
                                 end = true;
@@ -180,20 +183,28 @@ public class ChessBoardGUI extends JPanel {
             lastMoveDest = null;
             repaint();
         });
+        disableFlipButton = new JButton("Disable Flip");
+        disableFlipButton.addActionListener(e -> {
+            disableFlip = !disableFlip;
+            repaint();
+        });
         undoButton.addActionListener(e -> {
-            // Call the undo method when the button is clicked
             try {
-//                board.undo();
-                player.undo();
-                selectedPiece = null;
-                selectedRow = -1;
-                selectedCol = -1;
-                lastMoveSrc = null;
-                lastMoveDest = null;
-
-                flip=!flip;
-                if(movesTableModel.getRowCount()>0)
-                    movesTableModel.removeRow(movesTableModel.getRowCount()-1);
+                if(movesTableModel.getRowCount()>0) {
+                    player.undo();
+                    selectedPiece = null;
+                    selectedRow = -1;
+                    selectedCol = -1;
+                    lastMoveSrc = null;
+                    lastMoveDest = null;
+                    if (end) {
+                        end = false;
+                        movesTableModel.removeRow(movesTableModel.getRowCount() - 1);
+                    } else if (!disableFlip)
+                        flip = !flip;
+                    if (movesTableModel.getRowCount() > 0)
+                        movesTableModel.removeRow(movesTableModel.getRowCount() - 1);
+                }
 
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
@@ -298,6 +309,7 @@ public class ChessBoardGUI extends JPanel {
             JPanel buttonPanel = new JPanel();
             buttonPanel.add(chessBoardGUI.undoButton);
             buttonPanel.add(chessBoardGUI.flipButton);
+            buttonPanel.add(chessBoardGUI.disableFlipButton);
             buttonPanel.add(chessBoardGUI.resetButton);
             JScrollPane scrollPane = new JScrollPane(chessBoardGUI.movesTable);
             scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);

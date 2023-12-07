@@ -146,7 +146,9 @@ public class Player {
     }
         public void undo() {
         caretaker.undo(chessBoardInstance);
-
+        if(chessBoardInstance.isGameEnded()) {
+            chessBoardInstance.setGameEnded(false);
+        }
     }
         public void doCaptured(CoordinateEnum destCor, Piece srcPiece) {
         Piece destPiece = chessBoardInstance.getChessBoardPiece(destCor);
