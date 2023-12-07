@@ -13,7 +13,12 @@ public class KnightPiece extends Piece {
 
 
     private final String pieceName = KNIGHT_PIECE_NAME;
-    private final String PC =  this.getPieceColor()+ pieceName;
+    private String PC =  this.getPieceColor()+ pieceName;
+    public KnightPiece copy() {
+        KnightPiece knightPiece = new KnightPiece(this.getPieceColor(), this.getCurrentCoordinate());
+        knightPiece.PC = this.PC;
+        return knightPiece;
+    }
     @Override
     public String getPieceName() {
         return pieceName;

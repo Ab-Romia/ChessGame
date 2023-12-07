@@ -17,7 +17,7 @@ import static ChessCore.Utils.Constants.*;
  *
  * @author romia
  */
-public abstract class Piece {
+public abstract class Piece{
     private final String pieceColor;
     private CoordinateEnum currentCoordinate;
     private Piece piece;
@@ -37,6 +37,7 @@ public abstract class Piece {
 
     public abstract String getPieceName();
     public abstract String getPC();
+    public abstract Piece copy();
 
     public CoordinateEnum getCurrentCoordinate() {
         return currentCoordinate;

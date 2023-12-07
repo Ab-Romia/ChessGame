@@ -184,7 +184,14 @@ public class ChessBoardGUI extends JPanel {
             // Call the undo method when the button is clicked
             try {
 //                board.undo();
-                movesTableModel.removeRow(movesTableModel.getRowCount()-1);
+                player.undo();
+                selectedPiece = null;
+                selectedRow = -1;
+                selectedCol = -1;
+                flip=!flip;
+                if(movesTableModel.getRowCount()>0)
+                    movesTableModel.removeRow(movesTableModel.getRowCount()-1);
+
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }

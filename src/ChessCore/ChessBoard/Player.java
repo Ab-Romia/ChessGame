@@ -5,7 +5,7 @@ import ChessCore.Enum.CoordinateEnum;
 import ChessCore.Pieces.*;
 
 import Exceptions.*;
-
+import ChessCore.Undo.Caretaker;
 
 import java.util.*;
 
@@ -13,6 +13,7 @@ import static ChessCore.Enum.CoordinateEnum.*;
 import static ChessCore.Utils.Constants.*;
 public class Player {
         private final ChessBoard chessBoardInstance;
+        final Caretaker caretaker = new Caretaker();
 
         private static final List<String> outputs = new ArrayList<>();
 
@@ -60,17 +61,29 @@ public class Player {
             if (srcPiece instanceof PawnPiece) {
                 PawnPiece pawnPiece = (PawnPiece) srcPiece;
                 pawnPiece.setPromoteTo(name);
+                caretaker.saveState(chessBoardInstance);
                 pawnPiece.testIsEnPassantValid();
+
             }
             if (srcPiece.isValidMove(destCor)) {
+                if(!(srcPiece instanceof PawnPiece)) {
+                    caretaker.saveState(chessBoardInstance);
+                }
+
                 srcPiece = chessBoardInstance.getChessBoardPiece(srcPiece.getCurrentCoordinate());
                 doCaptured(destCor, srcPiece);
                 if (srcPiece instanceof PawnPiece) {
                     PawnPiece pp = (PawnPiece) srcPiece;
-                    if(pp.isEnPassant(destCor))
+                    if(pp.isEnPassant(destCor)) {
                         pp.doEnpassant(destCor);
+
+                    }
+
                     chessBoardInstance.setChessBoardPiece(srcPiece.getCurrentCoordinate(), destCor);
+
+
                 } else if (srcPiece instanceof KingPiece) {
+
                     KingPiece kp = (KingPiece) srcPiece;
                     if (kp.isRightCastling(destCor)) {
                         if (kp.getPieceColor().equals(WHITE)) {
@@ -80,6 +93,7 @@ public class Player {
                             chessBoardInstance.setChessBoardPiece(h8, f8);
                             chessBoardInstance.setChessBoardPiece(e8, g8);
                         }
+
                         outputs.add(kp.getPieceColor()+" King-Side Castling");
                     } else if (kp.isLeftCastling(destCor)) {
                         if (kp.getPieceColor().equals(WHITE)) {
@@ -89,14 +103,19 @@ public class Player {
                             chessBoardInstance.setChessBoardPiece(a8, d8);
                             chessBoardInstance.setChessBoardPiece(e8, c8);
                         }
+
                         outputs.add(kp.getPieceColor()+" Queen-Side Castling");
                     } else {
                         chessBoardInstance.setChessBoardPiece(srcPiece.getCurrentCoordinate(), destCor);
+
                     }
+
                 } else {
                     chessBoardInstance.setChessBoardPiece(srcPiece.getCurrentCoordinate(), destCor);
+
                 }
                 chessBoardInstance.setCurrentTurnColor(Objects.equals(chessBoardInstance.getCurrentTurnColor(), WHITE) ? BLACK : WHITE);
+
                 if (KingPiece.isKingAtRisk(chessBoardInstance.getCurrentTurnColor())) {
                     String color = chessBoardInstance.getCurrentTurnColor().equals(WHITE) ? BLACK : WHITE;
 
@@ -124,6 +143,10 @@ public class Player {
         } else {
             throw new InvalidMove();
         }
+    }
+        public void undo() {
+        caretaker.undo(chessBoardInstance);
+
     }
         public void doCaptured(CoordinateEnum destCor, Piece srcPiece) {
         Piece destPiece = chessBoardInstance.getChessBoardPiece(destCor);

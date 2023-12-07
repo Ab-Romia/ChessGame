@@ -16,16 +16,26 @@ import static java.lang.Math.abs;
 public class PawnPiece extends Piece {
 
     private final String pieceName = PAWN_PIECE_NAME;
-    private final String PC =  this.getPieceColor()+ pieceName;
+    private String PC =  this.getPieceColor()+ pieceName;
     private int initSquareMovement = 0;
     private boolean passant = true;
     private boolean isEnPassantValid = true;
     private String promoteTo = "";
 
+
+
     public String getPromoteTo() {
         return promoteTo;
     }
-
+    public PawnPiece copy() {
+    PawnPiece newPawn = new PawnPiece(this.getPieceColor(),this.getCurrentCoordinate());
+    newPawn.PC = this.PC;
+    newPawn.isEnPassantValid = this.isEnPassantValid;
+    newPawn.initSquareMovement = this.initSquareMovement;
+    newPawn.passant = this.passant;
+    newPawn.promoteTo = this.promoteTo;
+    return newPawn;
+}
 
     public void testIsEnPassantValid() {
 
@@ -149,6 +159,8 @@ public class PawnPiece extends Piece {
         ChessBoard chessBoardInstance = ChessBoard.getInstance();
         List<CoordinateEnum> possibleMoves = getPossibleMoves();
         for (int i = 0; i < possibleMoves.size(); i++) {
+            if(possibleMoves.get(i) == null)
+                continue;
             Piece possibleMove = chessBoardInstance.getChessBoardPiece(possibleMoves.get(i));
             if (possibleMove != null && (possibleMoves.get(i).getXCoordinate() == this.getCurrentCoordinate().getXCoordinate())
                     || (possibleMove != null && possibleMove.getPieceColor().equals(this.getPieceColor()))

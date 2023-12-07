@@ -15,7 +15,7 @@ public class KingPiece extends Piece {
     private final String pieceName = KING_PIECE_NAME;
     private boolean rCastle = true;
     private boolean lCastle = false;
-    private final String PC =  this.getPieceColor()+ pieceName;
+    private String PC =  this.getPieceColor()+ pieceName;
     public KingPiece(String name, CoordinateEnum coordinate) {
         super(name, coordinate);
     }
@@ -26,6 +26,14 @@ public class KingPiece extends Piece {
     @Override
     public String getPC() {
         return PC;
+    }
+    public KingPiece copy()
+    {
+        KingPiece kingPiece = new KingPiece(this.getPieceColor(), this.getCurrentCoordinate());
+        kingPiece.PC = this.PC;
+        kingPiece.rCastle = this.rCastle;
+        kingPiece.lCastle = this.lCastle;
+        return kingPiece;
     }
     @Override
     public List<CoordinateEnum> getPossibleMoves() {

@@ -5,7 +5,12 @@ import ChessCore.ChessBoard.StateChecker.GameStateChecker;
 import ChessCore.ChessBoard.StateChecker.InsufficientChecker;
 import ChessCore.Enum.CoordinateEnum;
 import ChessCore.Pieces.*;
+import ChessCore.Undo.Memento;
 
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 import static ChessCore.Utils.Constants.*;
 
@@ -66,6 +71,7 @@ public class ChessBoard {
     public void play(CoordinateEnum srcCor, CoordinateEnum destCor, String name, boolean mode) throws Exception {
         Player player = new Player(this);
         player.play(srcCor, destCor, name);
+
     }
     public boolean isInsufficient() {
         GameStateChecker checker = new InsufficientChecker();
@@ -87,5 +93,34 @@ public class ChessBoard {
             System.out.println();
         }
     }
+    public Memento createMemento() {
+        Map<CoordinateEnum, Piece> state = new HashMap<>();
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (chessBoard[i][j] != null) {
+                    state.put(CoordinateEnum.getCoordinateEnum(i, j), chessBoard[i][j]);
+                }
+            }
+        }
+        return new Memento(state);
+    }
+    public void restoreFromMemento(Memento memento) {
+        // Clear the current chessBoard
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                chessBoard[i][j] = null;
+            }
+        }
+
+        // Restore the state from the Memento
+        Map<CoordinateEnum, Piece> state = memento.getState();
+        for (Map.Entry<CoordinateEnum, Piece> entry : state.entrySet()) {
+            CoordinateEnum coordinate = entry.getKey();
+            Piece piece = entry.getValue();
+            chessBoard[coordinate.getXCoordinate()][coordinate.getYCoordinate()] = piece;
+        }
+        currentTurnColor = Objects.equals(currentTurnColor, WHITE) ?BLACK:WHITE;
+    }
+
 
 }

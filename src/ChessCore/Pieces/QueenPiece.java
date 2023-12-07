@@ -11,7 +11,12 @@ import static ChessCore.Utils.Constants.*;
 
 public class QueenPiece extends Piece {
     private final String pieceName = QUEEN_PIECE_NAME;
-    private final String PC =  this.getPieceColor()+ pieceName;
+    private String PC =  this.getPieceColor()+ pieceName;
+    public QueenPiece copy() {
+        QueenPiece queenPiece = new QueenPiece(this.getPieceColor(), this.getCurrentCoordinate());
+        queenPiece.PC = this.PC;
+        return queenPiece;
+    }
     public QueenPiece(String name, CoordinateEnum coordinate) {
         super(name, coordinate);
     }

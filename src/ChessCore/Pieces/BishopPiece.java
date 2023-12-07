@@ -12,10 +12,15 @@ import static ChessCore.Utils.Constants.BISHOP_PIECE_NAME;
 public class BishopPiece extends Piece {
 
     private final String pieceName = BISHOP_PIECE_NAME;
-    private final String PC =  this.getPieceColor()+ pieceName;
+    private String PC =  this.getPieceColor()+ pieceName;
 
     public BishopPiece(String name, CoordinateEnum coordinate) {
         super(name, coordinate);
+    }
+    public BishopPiece copy() {
+        BishopPiece bishopPiece = new BishopPiece(this.getPieceColor(), this.getCurrentCoordinate());
+        bishopPiece.PC = this.PC;
+        return bishopPiece;
     }
     @Override
     public String getPieceName() {

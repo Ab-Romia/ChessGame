@@ -12,7 +12,7 @@ import static ChessCore.Utils.Constants.ROOK_PIECE_NAME;
 
 public class RookPiece extends Piece {
     private final String pieceName = ROOK_PIECE_NAME;
-    private final String PC =  this.getPieceColor()+ pieceName;
+    private String PC =  this.getPieceColor()+ pieceName;
     private boolean didRookMove = false;
 
     public boolean getDidRookMove() {
@@ -26,6 +26,12 @@ public class RookPiece extends Piece {
     @Override
     public String getPC() {
         return PC;
+    }
+    public RookPiece copy() {
+        RookPiece rookPiece = new RookPiece(this.getPieceColor(), this.getCurrentCoordinate());
+        rookPiece.didRookMove = this.didRookMove;
+        rookPiece.PC = this.PC;
+        return rookPiece;
     }
     public RookPiece(String name, CoordinateEnum coordinate) {
         super(name, coordinate);
