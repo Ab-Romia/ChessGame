@@ -1,4 +1,4 @@
-package BoardGUI;
+package ChessCore.ChessBoard;
 
 import ChessCore.Enum.CoordinateEnum;
 

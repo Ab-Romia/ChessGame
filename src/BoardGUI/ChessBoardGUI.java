@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 import java.util.Objects;
 import javax.swing.table.DefaultTableModel;
 import ChessCore.ChessBoard.ChessBoard;
+import ChessCore.ChessBoard.Player;
 import ChessCore.Enum.*;
 import ChessCore.Pieces.*;
 import Exceptions.*;
@@ -20,6 +21,7 @@ public class ChessBoardGUI extends JPanel {
     private static final Color YELLOW_WHITE = new Color(255, 255, 200);
     private final char[] letters = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
     private final ChessBoard board = ChessBoard.getInstance();
+    private Player player = new Player(board);
     private Piece selectedPiece = null;
     private CoordinateEnum lastMoveSrc = null;
     private CoordinateEnum lastMoveDest = null;
@@ -60,7 +62,7 @@ public class ChessBoardGUI extends JPanel {
                         selectedPiece = board.getChessBoardPiece(CoordinateEnum.getCoordinateEnum(col, SIZE - row - 1));
                         selectedRow = row;
                         selectedCol = col;
-                        if (selectedPiece != null && board.srcInv(selectedPiece.getCurrentCoordinate())) {
+                        if (selectedPiece != null && player.srcInv(selectedPiece.getCurrentCoordinate())) {
                             JOptionPane.showMessageDialog(null, "Invalid move");
                             selectedPiece = null;
                             selectedRow = -1;
@@ -84,7 +86,7 @@ public class ChessBoardGUI extends JPanel {
                         CoordinateEnum src = CoordinateEnum.getCoordinateEnum(selectedCol, SIZE - 1 - selectedRow);
                         CoordinateEnum dest = CoordinateEnum.getCoordinateEnum(col, SIZE - 1 - row);
 
-                        if (board.destInv(src, dest)) {
+                        if (player.destInv(src, dest)) {
 
                             selectedPiece = null;
                             selectedRow = -1;
@@ -115,7 +117,7 @@ public class ChessBoardGUI extends JPanel {
                                 updateMovesTable(src, dest);
                                 lastMoveSrc = src;
                                 lastMoveDest = dest;
-//                                flip = !flip;
+                                flip = !flip;
                             }
                             catch (Won | Insufficient | Stalemate w) {
                                 end = true;
@@ -181,7 +183,7 @@ public class ChessBoardGUI extends JPanel {
         undoButton.addActionListener(e -> {
             // Call the undo method when the button is clicked
             try {
-                board.undo();
+//                board.undo();
                 movesTableModel.removeRow(movesTableModel.getRowCount()-1);
             } catch (Exception ex) {
                 throw new RuntimeException(ex);

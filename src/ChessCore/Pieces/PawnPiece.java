@@ -28,35 +28,24 @@ public class PawnPiece extends Piece {
 
 
     public void testIsEnPassantValid() {
-//        System.out.println("Piece at " + this.getCurrentCoordinate());
-//        if (this.getCurrentCoordinate() == f7) {
-//            System.out.println("");
-//        }
+
         ChessBoard chessBoard = ChessBoard.getInstance();
         int col = this.getPieceColor().equals(WHITE) ? 3 : 4;
         for (int row = 0 ; row < 8 ; row++) {
             Piece piece = chessBoard.getChessBoardPiece(row, col);
             if (piece instanceof PawnPiece) {
                 PawnPiece p = (PawnPiece) piece;
-                CoordinateEnum pawnPieceCoor = CoordinateEnum.getCoordinateEnum(row, col);
                 if (p.getPieceColor().equals(this.getPieceColor())||p.initSquareMovement!=2) {
-//                System.out.print(pawnPiece.getCurrentCoordinate() + " *");
                     p.isEnPassantValid = false;
-//                    chessBoard.setPieceInCoordinate(pawnPieceCoor, piece);
                 }
             }
         }
-//        System.out.println();
         if(!passant)
             this.isEnPassantValid = false;
         else {
             this.isEnPassantValid = true;
             passant = false;
         }
-    }
-
-    public boolean isEnPassantValid() {
-        return isEnPassantValid;
     }
 
     public Boolean isPromoted() {
@@ -98,20 +87,9 @@ public class PawnPiece extends Piece {
     public void setPromoteTo(String promoteTo) {
         this.promoteTo = promoteTo;
     }
-
-
-    public int getInitSquareMovement() {
-        return initSquareMovement;
-    }
-
     public void setInitSquareMovement(int initSquareMovement) {
         this.initSquareMovement = initSquareMovement;
     }
-
-    public PawnPiece createInstance(String color, CoordinateEnum coor) {
-        return new PawnPiece(color, coor);
-    }
-
     @Override
     public String getPieceName() {
         return pieceName;
@@ -185,21 +163,14 @@ public class PawnPiece extends Piece {
     @Override
     public Boolean isValidMove(CoordinateEnum destinationCoordinate) {
         ChessBoard chessBoardInstance = ChessBoard.getInstance();
-        Piece srcPiece = chessBoardInstance.getChessBoardPiece(this.getCurrentCoordinate());
         Piece dstPiece = chessBoardInstance.getChessBoardPiece(destinationCoordinate);
-        List<CoordinateEnum> possibleMoves = this.getPossibleMoves();
         if (this.getCurrentCoordinate().getYCoordinate() == 1 || this.getCurrentCoordinate().getYCoordinate() == 6) {
             if (destinationCoordinate.getYCoordinate() == 3 || destinationCoordinate.getYCoordinate() == 4) {
                 this.initSquareMovement = 2;
             }
         }
-        if (isEnPessant(destinationCoordinate)) {
-//            ChessBoard.addToOutputs(ENPASSANT);
-//            System.out.println(ENPASSANT);
-            if(isInCheck(this.getCurrentCoordinate(), destinationCoordinate)) {
-                return false;
-            }
-            return true;
+        if (isEnPassant(destinationCoordinate)) {
+            return !isInCheck(this.getCurrentCoordinate(), destinationCoordinate);
         }
         if (dstPiece != null) {
             if (Objects.equals(dstPiece.getPieceColor(), this.getPieceColor())) {
@@ -225,35 +196,26 @@ public class PawnPiece extends Piece {
                         return false;
                     }
                 }
-
                 return !isInCheck(this.getCurrentCoordinate(), destinationCoordinate);
             }
             return false;
         }
         else {
             this.setPiece(chessBoardInstance.getChessBoardPiece(this.getCurrentCoordinate()));
-
             return !isInCheck(this.getCurrentCoordinate(), destinationCoordinate);
         }
     }
  @Override
     public Boolean isValidMove(CoordinateEnum destinationCoordinate, boolean isCheck) {
         ChessBoard chessBoardInstance = ChessBoard.getInstance();
-        Piece srcPiece = chessBoardInstance.getChessBoardPiece(this.getCurrentCoordinate());
         Piece dstPiece = chessBoardInstance.getChessBoardPiece(destinationCoordinate);
-        List<CoordinateEnum> possibleMoves = this.getPossibleMoves();
         if (this.getCurrentCoordinate().getYCoordinate() == 1 || this.getCurrentCoordinate().getYCoordinate() == 6) {
             if (destinationCoordinate.getYCoordinate() == 3 || destinationCoordinate.getYCoordinate() == 4) {
                 this.initSquareMovement = 2;
             }
         }
-        if (isEnPessant(destinationCoordinate)) {
-//            ChessBoard.addToOutputs(ENPASSANT);
-//            System.out.println(ENPASSANT);
-            if(isInCheck(this.getCurrentCoordinate(), destinationCoordinate)) {
-                return false;
-            }
-            return true;
+        if (isEnPassant(destinationCoordinate)) {
+            return !isInCheck(this.getCurrentCoordinate(), destinationCoordinate);
         }
 
         if (getValidMoves().contains(destinationCoordinate)) {
@@ -281,23 +243,21 @@ public class PawnPiece extends Piece {
         }
     }
 
-    public void doEnpassant(CoordinateEnum destCoor)
+    public void doEnpassant(CoordinateEnum destCor)
     {
         ChessBoard chessBoard = ChessBoard.getInstance();
         int xCoor = this.getCurrentCoordinate().getXCoordinate();
         int yCoor = this.getCurrentCoordinate().getYCoordinate();
-        int destCoorX = destCoor.getXCoordinate();
-        int destCoorY = destCoor.getYCoordinate();
-        int pieceColorSign = this.getPieceColor().equals(WHITE) ? 1 : -1;
+        int destCoorX = destCor.getXCoordinate();
         int sign = destCoorX - xCoor; // left or right
         CoordinateEnum coordinateEnum = CoordinateEnum.getCoordinateEnum(xCoor + sign, yCoor);
-        if(isEnPessant(destCoor)) {
+        if(isEnPassant(destCor)) {
             chessBoard.setPieceInCoordinate(coordinateEnum, null);
 
         }
 
     }
-    public Boolean isEnPessant(CoordinateEnum destCoor) {
+    public Boolean isEnPassant(CoordinateEnum destCoor) {
 
         ChessBoard chessBoard = ChessBoard.getInstance();
         int xCoor = this.getCurrentCoordinate().getXCoordinate();

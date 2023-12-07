@@ -1,6 +1,7 @@
 package ChessCore.Test;
 
 import ChessCore.ChessBoard.ChessBoard;
+import ChessCore.ChessBoard.Player;
 import ChessCore.Enum.CoordinateEnum;
 
 import java.io.BufferedWriter;
@@ -68,7 +69,7 @@ public class ChessGame {
                 break;
             }
         }
-        writeToFile(ChessBoard.getOutputs());
+        writeToFile(Player.getOutputs());
         chessBoardInstance.printChessBoard();
     }
 }

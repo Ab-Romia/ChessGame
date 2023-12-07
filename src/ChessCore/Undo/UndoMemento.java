@@ -1,7 +1,6 @@
 package ChessCore.Undo;
 
-import BoardGUI.Move;
-import ChessCore.Pieces.Piece;
+import ChessCore.ChessBoard.Move;
 
 public class UndoMemento {
     private Move move;

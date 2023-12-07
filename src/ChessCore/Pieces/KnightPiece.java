@@ -14,10 +14,6 @@ public class KnightPiece extends Piece {
 
     private final String pieceName = KNIGHT_PIECE_NAME;
     private final String PC =  this.getPieceColor()+ pieceName;
-
-    public KnightPiece createInstance(String color, CoordinateEnum coor) {
-        return new KnightPiece(color, coor);
-    }
     @Override
     public String getPieceName() {
         return pieceName;
@@ -48,8 +44,6 @@ public class KnightPiece extends Piece {
     public Boolean isValidMove(CoordinateEnum destinationCoordinate){
         ChessBoard chessBoardInstance = ChessBoard.getInstance();
         List<CoordinateEnum> possibleMoves = this.getPossibleMoves();
-        Piece srcPiece = chessBoardInstance.getChessBoardPiece(this.getCurrentCoordinate());
-        Piece dstPiece = chessBoardInstance.getChessBoardPiece(destinationCoordinate);
         if (possibleMoves.contains(destinationCoordinate)) {
             Piece piece = chessBoardInstance.getChessBoardPiece(destinationCoordinate);
             if (piece != null) {
@@ -57,25 +51,16 @@ public class KnightPiece extends Piece {
                     return false;
                 }
             }
-            if (isInCheck(this.getCurrentCoordinate(), destinationCoordinate)) {
-                return false;
-            }
-            return true;
+            return !isInCheck(this.getCurrentCoordinate(), destinationCoordinate);
         }
         return false;
     }
     @Override
     public Boolean isValidMove(CoordinateEnum destinationCoordinate, boolean isCheck){
-        ChessBoard chessBoardInstance = ChessBoard.getInstance();
         List<CoordinateEnum> possibleMoves = this.getPossibleMoves();
-        Piece srcPiece = chessBoardInstance.getChessBoardPiece(this.getCurrentCoordinate());
-        Piece dstPiece = chessBoardInstance.getChessBoardPiece(destinationCoordinate);
         if (possibleMoves.contains(destinationCoordinate)) {
 
-            if (isInCheck(this.getCurrentCoordinate(), destinationCoordinate)) {
-                return false;
-            }
-            return true;
+            return !isInCheck(this.getCurrentCoordinate(), destinationCoordinate);
         }
         return false;
     }

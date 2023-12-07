@@ -27,11 +27,6 @@ public class RookPiece extends Piece {
     public String getPC() {
         return PC;
     }
-
-    public RookPiece createInstance(String color, CoordinateEnum coor) {
-        return new RookPiece(color, coor);
-    }
-
     public RookPiece(String name, CoordinateEnum coordinate) {
         super(name, coordinate);
     }
@@ -53,8 +48,6 @@ public class RookPiece extends Piece {
     @Override
     public Boolean isValidMove(CoordinateEnum destinationCoordinate) {
         ChessBoard chessBoardInstance = ChessBoard.getInstance();
-        Piece srcPiece = chessBoardInstance.getChessBoardPiece(this.getCurrentCoordinate());
-        Piece dstPiece = chessBoardInstance.getChessBoardPiece(destinationCoordinate);
         List<CoordinateEnum> possibleMoves = this.getPossibleMoves();
         FalseCastle(this.getCurrentCoordinate());
         if (possibleMoves.contains(destinationCoordinate)) {
@@ -70,35 +63,24 @@ public class RookPiece extends Piece {
             if (isThereObstacle(destinationCoordinate)) {
                 return false;
             }
-            if (isInCheck(this.getCurrentCoordinate(), destinationCoordinate)) {
-                return false;
-            }
-            return true;
+            return !isInCheck(this.getCurrentCoordinate(), destinationCoordinate);
         }
         return false;
     }
     @Override
     public Boolean isValidMove(CoordinateEnum destinationCoordinate, boolean isCheck) {
         ChessBoard chessBoardInstance = ChessBoard.getInstance();
-        Piece srcPiece = chessBoardInstance.getChessBoardPiece(this.getCurrentCoordinate());
-        Piece dstPiece = chessBoardInstance.getChessBoardPiece(destinationCoordinate);
         List<CoordinateEnum> possibleMoves = this.getPossibleMoves();
 
         if (possibleMoves.contains(destinationCoordinate)) {
             Piece piece = chessBoardInstance.getChessBoardPiece(destinationCoordinate);
             if (piece != null) {
-                if(isThereObstacle(destinationCoordinate)) {
-                    return false;
-                }
-                return true;
+                return !isThereObstacle(destinationCoordinate);
             }
             if (isThereObstacle(destinationCoordinate)) {
                 return false;
             }
-            if (isInCheck(this.getCurrentCoordinate(), destinationCoordinate)) {
-                return false;
-            }
-            return true;
+            return !isInCheck(this.getCurrentCoordinate(), destinationCoordinate);
         }
         return false;
     }

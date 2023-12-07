@@ -16,10 +16,6 @@ public class QueenPiece extends Piece {
         super(name, coordinate);
     }
 
-    public QueenPiece createInstance(String color, CoordinateEnum coor) {
-        return new QueenPiece(color, coor);
-    }
-
     @Override
     public String getPieceName() {
         return pieceName;
@@ -42,8 +38,6 @@ public class QueenPiece extends Piece {
     @Override
     public Boolean isValidMove(CoordinateEnum destinationCoordinate) {
         ChessBoard chessBoardInstance = ChessBoard.getInstance();
-        Piece srcPiece = chessBoardInstance.getChessBoardPiece(this.getCurrentCoordinate());
-        Piece dstPiece = chessBoardInstance.getChessBoardPiece(destinationCoordinate);
         List<CoordinateEnum> possibleMoves = this.getPossibleMoves();
 
         if (possibleMoves.contains(destinationCoordinate)) {
@@ -60,16 +54,13 @@ public class QueenPiece extends Piece {
                     return false;
             }
 
-            if(!isInCheck(this.getCurrentCoordinate(),destinationCoordinate))
-                return true;
+            return !isInCheck(this.getCurrentCoordinate(), destinationCoordinate);
         }
         return false;
     }
     @Override
     public Boolean isValidMove(CoordinateEnum destinationCoordinate, boolean isCheck) {
         ChessBoard chessBoardInstance = ChessBoard.getInstance();
-        Piece srcPiece = chessBoardInstance.getChessBoardPiece(this.getCurrentCoordinate());
-        Piece dstPiece = chessBoardInstance.getChessBoardPiece(destinationCoordinate);
         List<CoordinateEnum> possibleMoves = this.getPossibleMoves();
 
         if (possibleMoves.contains(destinationCoordinate)) {
@@ -84,9 +75,7 @@ public class QueenPiece extends Piece {
 
             }
 
-            if(isInCheck(this.getCurrentCoordinate(),destinationCoordinate))
-                return false;
-            return true;
+            return !isInCheck(this.getCurrentCoordinate(), destinationCoordinate);
         }
         return false;
     }

@@ -1,2 +1,8 @@
-Black in check
-In valid move
+Captured Pawn
+Captured Pawn
+Captured Pawn
+Captured Pawn
+Black in Check
+Captured Queen
+Captured Pawn
+White in Check

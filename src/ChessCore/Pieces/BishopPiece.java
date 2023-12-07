@@ -17,10 +17,6 @@ public class BishopPiece extends Piece {
     public BishopPiece(String name, CoordinateEnum coordinate) {
         super(name, coordinate);
     }
-
-    public BishopPiece createInstance(String color, CoordinateEnum coor) {
-        return new BishopPiece(color, coor);
-    }
     @Override
     public String getPieceName() {
         return pieceName;

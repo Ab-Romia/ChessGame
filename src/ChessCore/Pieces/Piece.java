@@ -19,8 +19,6 @@ import static ChessCore.Utils.Constants.*;
  */
 public abstract class Piece {
     private final String pieceColor;
-    private String pieceName;
-    private String PC;
     private CoordinateEnum currentCoordinate;
     private Piece piece;
 
@@ -92,22 +90,20 @@ public abstract class Piece {
             }
 
         }
-        if (destXCoor < srcXCoor) {
-            if (destYCoor  > srcYCoor ) {
-                // upper left
-                List<Piece> coordinateEnums = getUpperLeftDiagonalPossibleMoves(destCoor);
-                coordinateEnums.removeIf(Objects::isNull);
-                return !coordinateEnums.isEmpty();
-            } else {
-                // lower left
-                List<Piece> coordinateEnums = getLowerLeftDiagonalPossibleMoves(destCoor);
-                coordinateEnums.removeIf(Objects::isNull);
-                return !coordinateEnums.isEmpty();
-            }
-
+        if (destYCoor > srcYCoor) {
+            // upper left
+            List<Piece> coordinateEnums = getUpperLeftDiagonalPossibleMoves(destCoor);
+            coordinateEnums.removeIf(Objects::isNull);
+            return !coordinateEnums.isEmpty();
+        } else {
+            // lower left
+            List<Piece> coordinateEnums = getLowerLeftDiagonalPossibleMoves(destCoor);
+            coordinateEnums.removeIf(Objects::isNull);
+            return !coordinateEnums.isEmpty();
         }
-        return null;
+
     }
+
 
     public Boolean isInCheck(CoordinateEnum srcCoor, CoordinateEnum destCoor) {
         ChessBoard chessBoardInstance = ChessBoard.getInstance();
@@ -133,27 +129,6 @@ public abstract class Piece {
 
     public abstract Boolean isValidMove(CoordinateEnum destinationCoordinate);
     public abstract Boolean isValidMove(CoordinateEnum destinationCoordinate, boolean king);
-    //A method that returns true a coordinate in the board is attacked by a piece of the opposite color//
-    public Boolean isAttacked(CoordinateEnum coordinate) {
-        ChessBoard chessBoardInstance = ChessBoard.getInstance();
-        for (int i = 0 ; i < 8 ; i++) {
-            for (int j = 0; j < 8; j++) {
-                Piece piece = chessBoardInstance.getChessBoardPiece(i, j);
-                if (piece != null && !piece.getPieceColor().equals(this.getPieceColor())) {
-                    if (piece.isValidMove(coordinate)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    private Boolean doCapture(CoordinateEnum destinationCoordinate) throws Exception {
-        ChessBoard chessBoardInstance = ChessBoard.getInstance();
-        Piece piece = chessBoardInstance.getChessBoardPiece(destinationCoordinate);
-        return isValidMove(destinationCoordinate) && piece != null;
-    }
 
     public List<CoordinateEnum> getValidMoves() {
         ChessBoard chessBoardInstance = ChessBoard.getInstance();
@@ -335,69 +310,30 @@ public abstract class Piece {
             }
         }
 
-        for (int i = 0 ; i < pieces.size() ; i++) {
-            Piece srcPiece = pieces.get(i);
+        for (Piece srcPiece : pieces) {
             CoordinateEnum srcCoor = srcPiece.getCurrentCoordinate();
-            List<CoordinateEnum> validMoves = pieces.get(i).getValidMoves();
-            for(int j = 0 ; j < validMoves.size() ; j++) {
-                Piece destPiece = chessBoardInstance.getChessBoardPiece(validMoves.get(j));
-                CoordinateEnum destCoor = validMoves.get(j);
+            List<CoordinateEnum> validMoves = srcPiece.getValidMoves();
+            for (CoordinateEnum validMove : validMoves) {
+                Piece destPiece = chessBoardInstance.getChessBoardPiece(validMove);
                 String validPieceColor = null, validPieceName = null;
                 if (destPiece != null) {
                     validPieceColor = destPiece.getPieceColor();
                     validPieceName = destPiece.getPieceName();
                 }
-                chessBoardInstance.setChessBoardPiece(srcCoor, destCoor);
+                chessBoardInstance.setChessBoardPiece(srcCoor, validMove);
 
                 if (!KingPiece.isKingAtRisk(color)) {
                     //undo
-                    undoMove(validPieceColor, validPieceName, srcCoor, destCoor);
+                    undoMove(validPieceColor, validPieceName, srcCoor, validMove);
                     return true;
                 }
-                undoMove(validPieceColor, validPieceName, srcCoor, destCoor);
+                undoMove(validPieceColor, validPieceName, srcCoor, validMove);
             }
 
         }
         return false;
     }
-    public Boolean test(String color) {
-        ChessBoard chessBoardInstance = ChessBoard.getInstance();
-        for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
-                Piece piece = chessBoardInstance.getChessBoardPiece(i, j);
-                if (piece != null && piece.getPieceColor().equals(color)) {
-                    CoordinateEnum pieceCoor = piece.getCurrentCoordinate();
-                    List<CoordinateEnum> validMoves = piece.getValidMoves();
-                    for (int k = 0; k < validMoves.size(); k++) {
-                        Piece validePiece = chessBoardInstance.getChessBoardPiece(validMoves.get(k));
-                        String validePieceColor = null, pieceName = null;
-                        if (validePiece != null) {
-                            validePieceColor = validePiece.getPieceColor();
-                            pieceName = validePiece.getPieceName();
-                        }
-//                        System.out.println(piece.getCurrentCoordinate() + " " + validMoves.get(k));
-                        chessBoardInstance.setChessBoardPiece(pieceCoor, validMoves.get(k));
-//                        chessBoardInstance.printChessBoard();
-                        if (KingPiece.isKingAtRisk(piece.getPieceColor())) {
-                            undoMove(validePieceColor, pieceName, pieceCoor, validMoves.get(k));
-//                            chessBoardInstance.printChessBoard();
-//                            if (chessBoardInstance.getChessBoardPiece(g3).getPieceName() == BISHOP_PIECE_NAME) {
-//                                System.out.println("why");
-//                            }
-                        } else {
-//                           chessBoardInstance.printChessBoard();
-                            undoMove(validePieceColor, pieceName, pieceCoor, validMoves.get(k));
-//                            chessBoardInstance.printChessBoard();
-                            return true;
-                        }
-//                        System.out.println();
-                    }
-                }
-            }
-        }
-        return false;
 
-    }
 
     public void undoMove(String color, String pieceName, CoordinateEnum srcCoor, CoordinateEnum destCoor) {
         ChessBoard chessBoardInstance = ChessBoard.getInstance();
