@@ -1,4 +1,3 @@
-// File: src/ChessCore/Undo/Memento.java
 package ChessCore.Undo;
 
 import ChessCore.Enum.CoordinateEnum;

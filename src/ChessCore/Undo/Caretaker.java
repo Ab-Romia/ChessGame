@@ -1,4 +1,3 @@
-// File: src/ChessCore/Undo/Caretaker.java
 package ChessCore.Undo;
 
 import ChessCore.ChessBoard.ChessBoard;

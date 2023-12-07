@@ -99,12 +99,12 @@ public class KingPiece extends Piece {
         if (this.getPieceColor().equals(WHITE)) {
             kingCoor = e1;
             rookCoor = h1;
-            if (destCor != g1)
+            if (destCor != g1||isKingAtRisk(WHITE))
                 return false;
         } else {
             kingCoor = e8;
             rookCoor = h8;
-            if (destCor != g8)
+            if (destCor != g8||isKingAtRisk(BLACK))
                 return false;
         }
 
@@ -132,12 +132,12 @@ public class KingPiece extends Piece {
         if (this.getPieceColor().equals(WHITE)) {
             kingCor = e1;
             rookCor = a1;
-            if (destCor != c1)
+            if (destCor != c1||isKingAtRisk(WHITE))
                 return false;
         } else {
             kingCor = e8;
             rookCor = a8;
-            if (destCor != c8)
+            if (destCor != c8||isKingAtRisk(BLACK))
                 return false;
         }
         if(Objects.requireNonNull(getKingPieceByColor(getPieceColor())).getCurrentCoordinate()!=kingCor)
