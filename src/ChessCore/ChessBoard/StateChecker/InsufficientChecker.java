@@ -1,10 +1,12 @@
-package ChessCore.ChessBoard;
+package ChessCore.ChessBoard.StateChecker;
+import ChessCore.ChessBoard.ChessBoard;
+import ChessCore.ChessBoard.StateChecker.GameStateChecker;
 import ChessCore.Pieces.Piece;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import static ChessCore.Utils.Constants.*;
-public class InsufficientChecker implements GameStateChecker{
+public class InsufficientChecker implements GameStateChecker {
     @Override
     public boolean check(ChessBoard chessBoard) {
         List<String> condition1 = new ArrayList<>(List.of(KING_PIECE_NAME));

@@ -1,9 +1,11 @@
-package ChessCore.ChessBoard;
+package ChessCore.ChessBoard.StateChecker;
 
+import ChessCore.ChessBoard.ChessBoard;
+import ChessCore.ChessBoard.StateChecker.GameStateChecker;
 import ChessCore.Enum.CoordinateEnum;
 import ChessCore.Pieces.PawnPiece;
 import ChessCore.Pieces.Piece;
-public class CaptureChecker implements GameStateChecker{
+public class CaptureChecker implements GameStateChecker {
     private final CoordinateEnum srcCor;
     private final CoordinateEnum destCor;
 

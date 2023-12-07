@@ -80,6 +80,7 @@ public class Player {
                             chessBoardInstance.setChessBoardPiece(h8, f8);
                             chessBoardInstance.setChessBoardPiece(e8, g8);
                         }
+                        outputs.add(kp.getPieceColor()+" King-Side Castling");
                     } else if (kp.isLeftCastling(destCor)) {
                         if (kp.getPieceColor().equals(WHITE)) {
                             chessBoardInstance.setChessBoardPiece(a1, d1);
@@ -88,6 +89,7 @@ public class Player {
                             chessBoardInstance.setChessBoardPiece(a8, d8);
                             chessBoardInstance.setChessBoardPiece(e8, c8);
                         }
+                        outputs.add(kp.getPieceColor()+" Queen-Side Castling");
                     } else {
                         chessBoardInstance.setChessBoardPiece(srcPiece.getCurrentCoordinate(), destCor);
                     }

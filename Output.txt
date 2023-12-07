@@ -1,8 +1,2 @@
-Captured Pawn
-Captured Pawn
-Captured Pawn
-Captured Pawn
-Black in Check
-Captured Queen
-Captured Pawn
-White in Check
+White King-Side Castling
+Black King-Side Castling

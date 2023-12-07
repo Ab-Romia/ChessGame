@@ -1,5 +1,8 @@
 
 package ChessCore.ChessBoard;
+import ChessCore.ChessBoard.StateChecker.CaptureChecker;
+import ChessCore.ChessBoard.StateChecker.GameStateChecker;
+import ChessCore.ChessBoard.StateChecker.InsufficientChecker;
 import ChessCore.Enum.CoordinateEnum;
 import ChessCore.Pieces.*;
 
