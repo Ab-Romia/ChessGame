@@ -17,7 +17,7 @@ import Exceptions.*;
 public class ChessBoardGUI extends JPanel {
     private static final int SIZE = 8;
     private static final int SQUARE_SIZE = 120;
-    private static final Color LIGHT_BROWN = new Color(160, 70, 45);
+    private static final Color LIGHT_BROWN = new Color(0, 153, 153);
     private static final Color YELLOW_WHITE = new Color(255, 255, 200);
     private final char[] letters = {'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'};
     private final ChessBoard board = ChessBoard.getInstance();
