@@ -178,6 +178,9 @@ public class ChessBoardGUI extends JPanel {
         resetButton = new JButton("Reset Game");
         resetButton.addActionListener(e -> {
             board.resetBoard();
+            selectedPiece = null;
+            selectedRow = -1;
+            selectedCol = -1;
             reset = true;
             end = false;
             movesTableModel.setRowCount(0);
