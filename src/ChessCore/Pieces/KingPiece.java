@@ -78,7 +78,7 @@ public class KingPiece extends Piece {
 //                    System.out.println("King is not safe");
                     if(Objects.equals(piece.getPieceName(), PAWN_PIECE_NAME)&&i==xCor) {
                         chessBoard.setPieceInCoordinate(kp.getCurrentCoordinate(), kp);
-                        return true;
+                        continue;
                     }
                     chessBoard.setPieceInCoordinate(kp.getCurrentCoordinate(), kp);
                     return false;
